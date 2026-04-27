@@ -5,6 +5,11 @@
 
 import pytest
 
+# These tests require the full ``scitex`` package (for FigureModel/AxesModel/PlotStyle)
+# which is not installed in the standalone ``scitex-bridge`` CI environment.
+pytest.importorskip("scitex")
+pytest.importorskip("scitex.io.bundle.kinds._plot._models")
+
 
 class TestFigureToVisModel:
     """Tests for figure_to_vis_model function."""
@@ -24,8 +29,9 @@ class TestFigureToVisModel:
 
     def test_converts_to_figure_model(self, mpl_figure):
         """Test conversion to FigureModel."""
-        from scitex_bridge import figure_to_vis_model
         from scitex.io.bundle.kinds._plot._models import FigureModel
+
+        from scitex_bridge import figure_to_vis_model
 
         model = figure_to_vis_model(mpl_figure)
 
@@ -77,8 +83,9 @@ class TestAxesToVisAxes:
 
     def test_creates_axes_model(self, mpl_axes):
         """Test creation of AxesModel."""
-        from scitex_bridge import axes_to_vis_axes
         from scitex.io.bundle.kinds._plot._models import AxesModel
+
+        from scitex_bridge import axes_to_vis_axes
 
         model = axes_to_vis_axes(mpl_axes)
 
