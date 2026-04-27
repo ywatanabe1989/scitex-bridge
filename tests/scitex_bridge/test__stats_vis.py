@@ -5,15 +5,21 @@
 
 import pytest
 
+# These tests require the full ``scitex`` package which is not installed
+# in the standalone ``scitex-bridge`` CI environment.
+pytest.importorskip("scitex")
+pytest.importorskip("scitex.io.bundle.kinds._plot._models")
+
 
 class TestStatResultToAnnotation:
     """Tests for stat_result_to_annotation function."""
 
     def test_creates_annotation_model(self):
         """Test that function creates AnnotationModel."""
-        from scitex_bridge import stat_result_to_annotation
         from scitex.io.bundle.kinds._plot._models import AnnotationModel
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import stat_result_to_annotation
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         annotation = stat_result_to_annotation(result)
@@ -24,8 +30,9 @@ class TestStatResultToAnnotation:
 
     def test_annotation_has_position(self):
         """Test annotation has position set."""
-        from scitex_bridge import stat_result_to_annotation
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import stat_result_to_annotation
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         annotation = stat_result_to_annotation(result, x=0.5, y=0.9)
@@ -35,8 +42,9 @@ class TestStatResultToAnnotation:
 
     def test_format_style_applied(self):
         """Test different format styles."""
-        from scitex_bridge import stat_result_to_annotation
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import stat_result_to_annotation
 
         result = create_stat_result("pearson", "r", 0.85, 0.001)
 
@@ -63,8 +71,9 @@ class TestAddStatsToFigureModel:
 
     def test_adds_annotations_to_axes(self, figure_model):
         """Test adding stats adds annotations to axes."""
-        from scitex_bridge import add_stats_to_figure_model
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import add_stats_to_figure_model
 
         stats = [
             create_stat_result("t-test", "t", 2.5, 0.01),
@@ -88,8 +97,9 @@ class TestPositionStatAnnotation:
 
     def test_returns_position(self):
         """Test that function returns Position object."""
-        from scitex_bridge import position_stat_annotation
         from scitex.schema import Position, create_stat_result
+
+        from scitex_bridge import position_stat_annotation
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
@@ -101,8 +111,9 @@ class TestPositionStatAnnotation:
 
     def test_preferred_corner(self):
         """Test preferred corner positioning."""
-        from scitex_bridge import position_stat_annotation
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import position_stat_annotation
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}

@@ -6,14 +6,19 @@
 
 import pytest
 
+# These tests require the full ``scitex`` package which is not installed
+# in the standalone ``scitex-bridge`` CI environment.
+pytest.importorskip("scitex")
+
 
 class TestFormatStatForPlot:
     """Tests for format_stat_for_plot function."""
 
     def test_asterisk_format(self):
         """Test asterisk formatting."""
-        from scitex_bridge import format_stat_for_plot
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import format_stat_for_plot
 
         result = create_stat_result("t-test", "t", 2.5, 0.001)
         text = format_stat_for_plot(result, "asterisk")
@@ -21,8 +26,9 @@ class TestFormatStatForPlot:
 
     def test_compact_format(self):
         """Test compact formatting."""
-        from scitex_bridge import format_stat_for_plot
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import format_stat_for_plot
 
         result = create_stat_result("pearson", "r", 0.85, 0.001)
         text = format_stat_for_plot(result, "compact")
@@ -31,8 +37,9 @@ class TestFormatStatForPlot:
 
     def test_ns_format(self):
         """Test non-significant formatting."""
-        from scitex_bridge import format_stat_for_plot
         from scitex.schema import StatResult
+
+        from scitex_bridge import format_stat_for_plot
 
         # Use StatResult directly with stars="ns" to test ns formatting
         result = StatResult(
@@ -60,8 +67,9 @@ class TestAddStatToAxes:
 
     def test_add_stat_creates_annotation(self, mock_ax):
         """Test that add_stat_to_axes creates an annotation."""
-        from scitex_bridge import add_stat_to_axes
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import add_stat_to_axes
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
@@ -71,8 +79,9 @@ class TestAddStatToAxes:
 
     def test_stat_result_stored_on_annotation(self, mock_ax):
         """Test that StatResult is stored on annotation."""
-        from scitex_bridge import add_stat_to_axes
         from scitex.schema import create_stat_result
+
+        from scitex_bridge import add_stat_to_axes
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
@@ -88,9 +97,9 @@ class TestExtractStatsFromAxes:
     def ax_with_stats(self):
         """Create axes with stat annotations."""
         import matplotlib.pyplot as plt
+        from scitex.schema import create_stat_result
 
         from scitex_bridge import add_stat_to_axes
-        from scitex.schema import create_stat_result
 
         fig, ax = plt.subplots()
         result1 = create_stat_result("t-test", "t", 2.5, 0.01)
