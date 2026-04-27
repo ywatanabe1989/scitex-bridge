@@ -1,5 +1,16 @@
 # scitex-bridge
 
+<!-- scitex-badges:start -->
+[![PyPI](https://img.shields.io/pypi/v/scitex-bridge.svg)](https://pypi.org/project/scitex-bridge/)
+[![Python](https://img.shields.io/pypi/pyversions/scitex-bridge.svg)](https://pypi.org/project/scitex-bridge/)
+[![Tests](https://github.com/ywatanabe1989/scitex-bridge/actions/workflows/test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-bridge/actions/workflows/test.yml)
+[![Install Test](https://github.com/ywatanabe1989/scitex-bridge/actions/workflows/install-test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-bridge/actions/workflows/install-test.yml)
+[![Coverage](https://codecov.io/gh/ywatanabe1989/scitex-bridge/graph/badge.svg)](https://codecov.io/gh/ywatanabe1989/scitex-bridge)
+[![Docs](https://readthedocs.org/projects/scitex-bridge/badge/?version=latest)](https://scitex-bridge.readthedocs.io/en/latest/)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+<!-- scitex-badges:end -->
+
+
 Cross-module adapters between scitex.stats / matplotlib / vis-FigureModel, extracted from the [SciTeX](https://github.com/ywatanabe1989/scitex-python) ecosystem as a standalone package.
 
 ## Install
