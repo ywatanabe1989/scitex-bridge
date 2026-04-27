@@ -5,6 +5,11 @@
 
 import pytest
 
+# These tests pull `create_stat_result` and `FigureModel` from the umbrella
+# `scitex` package. When the standalone scitex_bridge wheel is tested in
+# isolation, `scitex` may not be installed; skip rather than ImportError.
+pytest.importorskip("scitex.schema")
+
 
 class TestAddStatsFromResults:
     """Tests for add_stats_from_results helper."""
@@ -40,8 +45,9 @@ class TestAddStatsFromResults:
 
     def test_auto_detect_figure_model(self, stat_results):
         """Test auto-detection works with FigureModel."""
-        from scitex_bridge import add_stats_from_results
         from scitex.io.bundle.kinds._plot._models import FigureModel
+
+        from scitex_bridge import add_stats_from_results
 
         model = FigureModel(
             width_mm=170,
@@ -73,8 +79,9 @@ class TestAddStatsFromResults:
 
     def test_explicit_vis_backend(self, stat_results):
         """Test explicit vis backend."""
-        from scitex_bridge import add_stats_from_results
         from scitex.io.bundle.kinds._plot._models import FigureModel
+
+        from scitex_bridge import add_stats_from_results
 
         model = FigureModel(
             width_mm=170,
@@ -88,9 +95,9 @@ class TestAddStatsFromResults:
     def test_single_stat_result(self):
         """Test with single StatResult (not list)."""
         import matplotlib.pyplot as plt
+        from scitex.schema import create_stat_result
 
         from scitex_bridge import add_stats_from_results
-        from scitex.schema import create_stat_result
 
         fig, ax = plt.subplots()
         stat = create_stat_result("pearson", "r", 0.85, 0.001)
@@ -104,9 +111,9 @@ class TestAddStatsFromResults:
     def test_format_style_applied(self):
         """Test format_style is passed through."""
         import matplotlib.pyplot as plt
+        from scitex.schema import create_stat_result
 
         from scitex_bridge import add_stats_from_results
-        from scitex.schema import create_stat_result
 
         fig, ax = plt.subplots()
         stat = create_stat_result("pearson", "r", 0.85, 0.001)
