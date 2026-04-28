@@ -97,9 +97,10 @@ class TestPositionStatAnnotation:
 
     def test_returns_position(self):
         """Test that function returns Position object."""
-        from scitex.schema import Position, create_stat_result
+        from scitex.schema import create_stat_result
 
         from scitex_bridge import position_stat_annotation
+        from scitex_bridge._stats_vis import Position
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
