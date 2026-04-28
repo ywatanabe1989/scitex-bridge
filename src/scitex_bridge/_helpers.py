@@ -80,13 +80,13 @@ def add_stats_from_results(
 
     # Dispatch to appropriate function
     if backend == "plt":
-        from scitex.bridge._stats_plt import add_stat_to_axes
+        from scitex_bridge._stats_plt import add_stat_to_axes
 
         for stat in stat_results:
             add_stat_to_axes(target, stat, format_style=format_style, **kwargs)
 
     elif backend == "vis":
-        from scitex.bridge._stats_vis import add_stats_to_figure_model
+        from scitex_bridge._stats_vis import add_stats_to_figure_model
 
         add_stats_to_figure_model(
             target,
@@ -117,7 +117,7 @@ def _detect_backend(target) -> Literal["plt", "vis"]:
     """
     # Check for vis FigureModel
     try:
-        from scitex.io.bundle.kinds._plot._models import FigureModel
+        from scitex_io.bundle.kinds._plot._models import FigureModel
 
         if isinstance(target, FigureModel):
             return "vis"
