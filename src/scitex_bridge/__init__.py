@@ -3,8 +3,15 @@
 # Time-stamp: "2024-12-09 09:30:00 (ywatanabe)"
 """scitex-bridge — cross-module adapters (stats↔plt / stats↔vis / plt↔vis) — standalone.
 
-__version__ = "0.1.0"
-
+try:
+    from importlib.metadata import version as _v, PackageNotFoundError
+    try:
+        __version__ = _v("scitex-bridge")
+    except PackageNotFoundError:
+        __version__ = "0.0.0+local"
+    del _v, PackageNotFoundError
+except ImportError:  # pragma: no cover — only on ancient Pythons
+    __version__ = "0.0.0+local"
 SciTeX Bridge Module - Cross-module adapters and transformations.
 
 This module provides the official API for connecting SciTeX modules:
