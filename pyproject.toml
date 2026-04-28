@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scitex-bridge"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cross-module adapters: scitex.stats ↔ matplotlib annotations, scitex.stats ↔ vis FigureModel, scitex.plt ↔ vis — standalone module from the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -46,6 +46,12 @@ Documentation = "https://scitex-bridge.readthedocs.io"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+scitex_bridge = ["_skills/**/*.md"]
+
+[project.entry-points."scitex_dev.skills"]
+scitex-bridge = "scitex_bridge"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
