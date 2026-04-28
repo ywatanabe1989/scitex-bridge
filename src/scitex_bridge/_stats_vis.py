@@ -29,13 +29,13 @@ from typing import Dict, List, Optional, Tuple
 # when the umbrella package is installed so produced Position objects round-trip
 # cleanly through bundle code paths; otherwise fall back to the vendored copy.
 try:
-    from scitex_io.bundle.kinds._stats import Position
+    from scitex.io.bundle.kinds._stats import Position
 except ImportError:
     from ._compat import Position
 
 # Legacy model imports - may not be available
 try:
-    from scitex_io.bundle.kinds._plot._models import (
+    from scitex.io.bundle.kinds._plot._models import (
         AnnotationModel,
         AxesModel,
         FigureModel,
