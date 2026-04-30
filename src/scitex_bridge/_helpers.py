@@ -70,8 +70,8 @@ def add_stats_from_results(
     - scitex.bridge.add_stat_to_axes (plt backend)
     - scitex.bridge.add_stats_to_figure_model (vis backend)
     """
-    # Normalize to list
-    if isinstance(stat_results, StatResult):
+    # Normalize to list (accept dict, scitex.schema.StatResult, or any non-sequence single result)
+    if not isinstance(stat_results, (list, tuple)):
         stat_results = [stat_results]
 
     # Auto-detect backend
