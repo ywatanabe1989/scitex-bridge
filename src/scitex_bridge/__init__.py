@@ -3,15 +3,6 @@
 # Time-stamp: "2024-12-09 09:30:00 (ywatanabe)"
 """scitex-bridge — cross-module adapters (stats↔plt / stats↔vis / plt↔vis) — standalone.
 
-try:
-    from importlib.metadata import version as _v, PackageNotFoundError
-    try:
-        __version__ = _v("scitex-bridge")
-    except PackageNotFoundError:
-        __version__ = "0.0.0+local"
-    del _v, PackageNotFoundError
-except ImportError:  # pragma: no cover — only on ancient Pythons
-    __version__ = "0.0.0+local"
 SciTeX Bridge Module - Cross-module adapters and transformations.
 
 This module provides the official API for connecting SciTeX modules:
@@ -52,6 +43,20 @@ Usage:
         tracking_to_plot_configs,
     )
 """
+
+from __future__ import annotations
+
+try:
+    from importlib.metadata import PackageNotFoundError
+    from importlib.metadata import version as _v
+
+    try:
+        __version__ = _v("scitex-bridge")
+    except PackageNotFoundError:
+        __version__ = "0.0.0+local"
+    del _v, PackageNotFoundError
+except ImportError:  # pragma: no cover — only on ancient Pythons
+    __version__ = "0.0.0+local"
 
 # Stats ↔ Plt bridges
 # FigRecipe integration (optional)
@@ -96,6 +101,7 @@ from scitex_bridge._stats_vis import (
 )
 
 __all__ = [
+    "__version__",
     # Protocol
     "BRIDGE_PROTOCOL_VERSION",
     "ProtocolInfo",
