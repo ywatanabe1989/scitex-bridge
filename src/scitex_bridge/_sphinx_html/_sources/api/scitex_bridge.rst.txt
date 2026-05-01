@@ -1,0 +1,6 @@
+﻿scitex\_bridge
+==============
+
+.. automodule:: scitex_bridge
+
+   

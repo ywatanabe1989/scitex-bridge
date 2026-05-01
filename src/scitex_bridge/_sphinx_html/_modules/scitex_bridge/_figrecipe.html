@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_bridge._figrecipe &mdash; scitex-bridge 0.1.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-bridge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_bridge.html">scitex_bridge</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-bridge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_bridge._figrecipe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_bridge._figrecipe</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Bridge adapter for figrecipe integration.</span>
+
+<span class="sd">This module provides functions to save figures with both:</span>
+<span class="sd">- SigmaPlot-compatible CSV (scitex format)</span>
+<span class="sd">- figrecipe YAML recipe (reproducible figures)</span>
+
+<span class="sd">The FTS bundle structure:</span>
+<span class="sd">    figure/</span>
+<span class="sd">    ├── recipe.yaml     # Source of truth (figrecipe format)</span>
+<span class="sd">    ├── recipe_data/    # Large arrays (if needed)</span>
+<span class="sd">    ├── plot.csv        # SigmaPlot combined CSV (derived)</span>
+<span class="sd">    ├── plot.png        # Primary image (derived)</span>
+<span class="sd">    └── meta.yaml       # FTS metadata (optional)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># Check figrecipe availability</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">figrecipe</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fr</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">figrecipe._serializer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_recipe</span> <span class="k">as</span> <span class="n">_fr_save_recipe</span>
+
+    <span class="n">FIGRECIPE_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">FIGRECIPE_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="save_with_recipe">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.save_with_recipe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_with_recipe</span><span class="p">(</span>
+    <span class="n">fig</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="n">include_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_recipe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figure with both CSV and figrecipe recipe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fig : FigWrapper or matplotlib Figure</span>
+<span class="sd">        The figure to save.</span>
+<span class="sd">    path : str or Path</span>
+<span class="sd">        Output path. Can be:</span>
+<span class="sd">        - Directory path (creates bundle)</span>
+<span class="sd">        - File path with .zip extension (creates zip bundle)</span>
+<span class="sd">        - File path with image extension (saves image + sidecar files)</span>
+<span class="sd">    include_csv : bool</span>
+<span class="sd">        If True, save SigmaPlot-compatible CSV.</span>
+<span class="sd">    include_recipe : bool</span>
+<span class="sd">        If True, save figrecipe YAML recipe (requires figrecipe).</span>
+<span class="sd">    data_format : str</span>
+<span class="sd">        Format for recipe data: &#39;csv&#39;, &#39;npz&#39;, or &#39;inline&#39;.</span>
+<span class="sd">    dpi : int</span>
+<span class="sd">        Resolution for image output.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional arguments passed to savefig (including facecolor).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Paths to saved files: {&#39;image&#39;: Path, &#39;csv&#39;: Path, &#39;recipe&#39;: Path}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex.io.bundle._bundle._storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_storage</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Determine if this is a bundle (directory or zip)</span>
+    <span class="n">is_bundle</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.zip&quot;</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">is_bundle</span><span class="p">:</span>
+        <span class="c1"># Create bundle storage</span>
+        <span class="n">storage</span> <span class="o">=</span> <span class="n">get_storage</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">storage</span><span class="o">.</span><span class="n">ensure_exists</span><span class="p">()</span>
+
+        <span class="c1"># 1. Save image - use fig.savefig() to get facecolor fix from FigWrapper</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;plot.png&quot;</span>
+        <span class="n">_save_figure_image</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">image_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_path</span>
+
+        <span class="c1"># 2. Save SigmaPlot CSV</span>
+        <span class="k">if</span> <span class="n">include_csv</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;export_as_csv&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">csv_df</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">export_as_csv</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">csv_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="n">csv_path</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;plot.csv&quot;</span>
+                    <span class="n">csv_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csv_path</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># CSV export is optional</span>
+
+        <span class="c1"># 3. Save figrecipe recipe</span>
+        <span class="k">if</span> <span class="n">include_recipe</span><span class="p">:</span>
+            <span class="n">recipe_path</span> <span class="o">=</span> <span class="n">_save_recipe_to_path</span><span class="p">(</span>
+                <span class="n">fig</span><span class="p">,</span> <span class="n">storage</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;recipe.yaml&quot;</span><span class="p">,</span> <span class="n">data_format</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">recipe_path</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;recipe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipe_path</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single file save (image + sidecars)</span>
+        <span class="n">_save_figure_image</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+
+        <span class="c1"># Save CSV sidecar</span>
+        <span class="k">if</span> <span class="n">include_csv</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;export_as_csv&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">csv_df</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">export_as_csv</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">csv_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="n">csv_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+                    <span class="n">csv_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csv_path</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Save recipe sidecar</span>
+        <span class="k">if</span> <span class="n">include_recipe</span><span class="p">:</span>
+            <span class="n">recipe_path</span> <span class="o">=</span> <span class="n">_save_recipe_to_path</span><span class="p">(</span>
+                <span class="n">fig</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">),</span> <span class="n">data_format</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">recipe_path</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;recipe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipe_path</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_save_figure_image</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figure image using the best available method with facecolor support.</span>
+
+<span class="sd">    Uses fig.savefig() when available (FigWrapper or RecordingFigure) to get</span>
+<span class="sd">    the facecolor override fix for transparent figures.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if this is a figrecipe RecordingFigure - use fr.save() for full support</span>
+    <span class="k">if</span> <span class="n">FIGRECIPE_AVAILABLE</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">figrecipe.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecordingFigure</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">RecordingFigure</span><span class="p">):</span>
+                <span class="c1"># Use figrecipe&#39;s save with facecolor support</span>
+                <span class="n">facecolor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;facecolor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">fr</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                    <span class="n">fig</span><span class="p">,</span>
+                    <span class="n">path</span><span class="p">,</span>
+                    <span class="n">save_recipe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Recipe saved separately</span>
+                    <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+                    <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Use fig.savefig() if available (FigWrapper has facecolor fix)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;savefig&quot;</span><span class="p">):</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Fallback to matplotlib figure&#39;s savefig</span>
+        <span class="n">mpl_fig</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">_fig_mpl</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;_fig_mpl&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">fig</span>
+        <span class="n">mpl_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_save_recipe_to_path</span><span class="p">(</span>
+    <span class="n">fig</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figrecipe recipe if available.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fig : FigWrapper</span>
+<span class="sd">        Figure with optional _figrecipe_recorder attribute.</span>
+<span class="sd">    path : Path</span>
+<span class="sd">        Output path for recipe.yaml.</span>
+<span class="sd">    data_format : str</span>
+<span class="sd">        Format for data: &#39;csv&#39;, &#39;npz&#39;, or &#39;inline&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Path or None</span>
+<span class="sd">        Path to saved recipe, or None if not available.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">FIGRECIPE_AVAILABLE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Check if figure has figrecipe recorder</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;_figrecipe_recorder&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fig</span><span class="o">.</span><span class="n">_figrecipe_enabled</span><span class="p">:</span>
+            <span class="n">recorder</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">_figrecipe_recorder</span>
+            <span class="n">figure_record</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">figure_record</span>
+
+            <span class="c1"># Capture current figure state into record</span>
+            <span class="n">_capture_figure_state</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">figure_record</span><span class="p">)</span>
+
+            <span class="c1"># Save using figrecipe&#39;s serializer</span>
+            <span class="n">_fr_save_recipe</span><span class="p">(</span>
+                <span class="n">figure_record</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">path</span>
+
+        <span class="c1"># Alternative: if figure was created with fr.subplots() directly</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;save_recipe&quot;</span><span class="p">):</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">save_recipe</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">path</span>
+
+        <span class="c1"># Diagram figures: d.render() attaches _figrecipe_diagram</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;_figrecipe_diagram&quot;</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">figrecipe._diagram._diagram._io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_diagram_recipe</span>
+
+            <span class="n">save_diagram_recipe</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">_figrecipe_diagram</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">path</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Recipe saving is optional</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_capture_figure_state</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">figure_record</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Capture current figure state into the record.</span>
+
+<span class="sd">    This syncs the matplotlib figure state with the figrecipe record,</span>
+<span class="sd">    ensuring the recipe reflects the final figure appearance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mpl_fig</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">_fig_mpl</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;_fig_mpl&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">fig</span>
+
+        <span class="c1"># Update figure dimensions</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="n">mpl_fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+        <span class="n">figure_record</span><span class="o">.</span><span class="n">figsize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="n">figure_record</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mpl_fig</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+
+        <span class="c1"># Capture style from scitex metadata if available</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mpl_fig</span><span class="p">,</span> <span class="s2">&quot;_scitex_theme&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">figure_record</span><span class="p">,</span> <span class="s2">&quot;style&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">figure_record</span><span class="o">.</span><span class="n">style</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">figure_record</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">figure_record</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">&quot;theme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpl_fig</span><span class="o">.</span><span class="n">_scitex_theme</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Non-critical</span>
+
+
+<div class="viewcode-block" id="load_recipe">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.load_recipe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_recipe</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load figrecipe recipe from FTS bundle.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str or Path</span>
+<span class="sd">        Path to bundle directory, zip file, or recipe.yaml.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        (fig, axes) reproduced from recipe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">FIGRECIPE_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;figrecipe is required for loading recipes&quot;</span><span class="p">)</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Handle bundle paths</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">recipe_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;recipe.yaml&quot;</span>
+    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.zip&quot;</span><span class="p">:</span>
+        <span class="c1"># figrecipe can handle zip files directly</span>
+        <span class="n">recipe_path</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">recipe_path</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="k">return</span> <span class="n">fr</span><span class="o">.</span><span class="n">reproduce</span><span class="p">(</span><span class="n">recipe_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="has_figrecipe">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.has_figrecipe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">has_figrecipe</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if figrecipe is available.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FIGRECIPE_AVAILABLE</span></div>
+
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

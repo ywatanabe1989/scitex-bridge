@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_bridge._stats_plt &mdash; scitex-bridge 0.1.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-bridge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_bridge.html">scitex_bridge</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-bridge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_bridge._stats_plt</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_bridge._stats_plt</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># File: ./src/scitex/bridge/_stats_plt.py</span>
+<span class="c1"># Time-stamp: &quot;2024-12-09 10:00:00 (ywatanabe)&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bridge module for stats ↔ plt integration.</span>
+
+<span class="sd">Provides adapters to:</span>
+<span class="sd">- Add statistical results as annotations on matplotlib axes</span>
+<span class="sd">- Extract stats from axes with tracked annotations</span>
+<span class="sd">- Format statistical text for plot display</span>
+
+<span class="sd">Coordinate Convention</span>
+<span class="sd">---------------------</span>
+<span class="sd">This module uses **axes coordinates** (0-1 normalized) for positioning</span>
+<span class="sd">when auto-positioning is used (no explicit x, y given). This matches</span>
+<span class="sd">matplotlib&#39;s typical annotation workflow where positions are relative</span>
+<span class="sd">to the axes bounding box.</span>
+
+<span class="sd">- (0, 0) = bottom-left of axes</span>
+<span class="sd">- (1, 1) = top-right of axes</span>
+<span class="sd">- Default auto-position: (0.5, 0.95) = top-center</span>
+
+<span class="sd">When explicit x, y are provided, they use whatever coordinate system</span>
+<span class="sd">the caller intends (typically data coordinates unless transform is set).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># Import GUI classes from FTS (single source of truth)</span>
+
+<span class="c1"># StatResult is now a dict - the GUI-specific StatResult is deprecated</span>
+<span class="n">StatResult</span> <span class="o">=</span> <span class="nb">dict</span>
+
+
+<div class="viewcode-block" id="format_stat_for_plot">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.format_stat_for_plot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_stat_for_plot</span><span class="p">(</span>
+    <span class="n">stat_result</span><span class="p">:</span> <span class="n">StatResult</span><span class="p">,</span>
+    <span class="n">format_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asterisk&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format a StatResult for display on a plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    stat_result : StatResult</span>
+<span class="sd">        The statistical result to format</span>
+<span class="sd">    format_style : str</span>
+<span class="sd">        One of &quot;asterisk&quot;, &quot;compact&quot;, &quot;detailed&quot;, &quot;publication&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Formatted string for plot annotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stat_result</span><span class="o">.</span><span class="n">format_text</span><span class="p">(</span><span class="n">format_style</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_stat_to_axes">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.add_stat_to_axes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_stat_to_axes</span><span class="p">(</span>
+    <span class="n">ax</span><span class="p">,</span>
+    <span class="n">stat_result</span><span class="p">:</span> <span class="n">StatResult</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">format_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asterisk&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add a statistical result annotation to a matplotlib axes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : matplotlib.axes.Axes or scitex.plt AxisWrapper</span>
+<span class="sd">        The axes to annotate</span>
+<span class="sd">    stat_result : StatResult</span>
+<span class="sd">        The statistical result to display</span>
+<span class="sd">    x : float, optional</span>
+<span class="sd">        X position for the annotation. If None, uses stat_result.positioning</span>
+<span class="sd">    y : float, optional</span>
+<span class="sd">        Y position for the annotation. If None, uses stat_result.positioning</span>
+<span class="sd">    format_style : str</span>
+<span class="sd">        Format style for the text (&quot;asterisk&quot;, &quot;compact&quot;, &quot;detailed&quot;, &quot;publication&quot;)</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional kwargs passed to ax.annotate() or ax.text()</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.text.Text or matplotlib.text.Annotation</span>
+<span class="sd">        The created annotation object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get formatted text</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">format_stat_for_plot</span><span class="p">(</span><span class="n">stat_result</span><span class="p">,</span> <span class="n">format_style</span><span class="p">)</span>
+
+    <span class="c1"># Determine position</span>
+    <span class="c1"># Check if using StatResult positioning</span>
+    <span class="n">use_stat_positioning</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">positioning</span> <span class="o">=</span> <span class="n">stat_result</span><span class="o">.</span><span class="n">positioning</span>
+        <span class="k">if</span> <span class="n">positioning</span> <span class="ow">and</span> <span class="n">positioning</span><span class="o">.</span><span class="n">position</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">positioning</span><span class="o">.</span><span class="n">position</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">use_stat_positioning</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Auto-position: top center of axes in axes coordinates</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mf">0.95</span>
+
+    <span class="c1"># Default to axes coordinates (0-1) unless user explicitly sets transform</span>
+    <span class="c1"># This makes positioning intuitive: (0.5, 0.9) = top center of plot</span>
+    <span class="k">if</span> <span class="s2">&quot;transform&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;transform&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_axes_transform</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ha&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;va&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Apply styling from StatResult if available</span>
+    <span class="n">styling</span> <span class="o">=</span> <span class="n">stat_result</span><span class="o">.</span><span class="n">styling</span>
+    <span class="k">if</span> <span class="n">styling</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fontsize&quot;</span><span class="p">,</span> <span class="n">styling</span><span class="o">.</span><span class="n">font_size_pt</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fontfamily&quot;</span><span class="p">,</span> <span class="n">styling</span><span class="o">.</span><span class="n">font_family</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">styling</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="c1"># Get the actual matplotlib axes</span>
+    <span class="n">mpl_ax</span> <span class="o">=</span> <span class="n">_get_mpl_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># Create the annotation</span>
+    <span class="n">annotation</span> <span class="o">=</span> <span class="n">mpl_ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Store reference to stat_result on the annotation for later extraction</span>
+    <span class="n">annotation</span><span class="o">.</span><span class="n">_scitex_stat_result</span> <span class="o">=</span> <span class="n">stat_result</span>
+
+    <span class="k">return</span> <span class="n">annotation</span></div>
+
+
+
+<div class="viewcode-block" id="extract_stats_from_axes">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.extract_stats_from_axes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_stats_from_axes</span><span class="p">(</span>
+    <span class="n">ax</span><span class="p">,</span>
+    <span class="n">include_non_stat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StatResult</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract StatResult objects from axes annotations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : matplotlib.axes.Axes or scitex.plt AxisWrapper</span>
+<span class="sd">        The axes to extract stats from</span>
+<span class="sd">    include_non_stat : bool</span>
+<span class="sd">        If True, create basic StatResult for non-stat annotations</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[StatResult]</span>
+<span class="sd">        List of StatResult objects found in annotations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mpl_ax</span> <span class="o">=</span> <span class="n">_get_mpl_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># Check all text objects (annotations and texts)</span>
+    <span class="k">for</span> <span class="n">text_obj</span> <span class="ow">in</span> <span class="n">mpl_ax</span><span class="o">.</span><span class="n">texts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">text_obj</span><span class="p">,</span> <span class="s2">&quot;_scitex_stat_result&quot;</span><span class="p">):</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_obj</span><span class="o">.</span><span class="n">_scitex_stat_result</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">include_non_stat</span><span class="p">:</span>
+            <span class="c1"># Create a basic StatResult for non-stat text</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">text_obj</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="c1"># Try to detect if it&#39;s a stat-like annotation</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">_parse_stat_annotation</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_mpl_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the underlying matplotlib axes from wrapper or native.&quot;&quot;&quot;</span>
+    <span class="c1"># Handle scitex AxisWrapper</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_axes_mpl&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ax</span><span class="o">.</span><span class="n">_axes_mpl</span>
+    <span class="c1"># Handle scitex AxesWrapper (multiple axes)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_axes_scitex&quot;</span><span class="p">):</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">_axes_scitex</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="s2">&quot;flat&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">axes</span>
+    <span class="c1"># Already matplotlib axes</span>
+    <span class="k">return</span> <span class="n">ax</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_axes_transform</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the axes transform for positioning.&quot;&quot;&quot;</span>
+    <span class="n">mpl_ax</span> <span class="o">=</span> <span class="n">_get_mpl_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mpl_ax</span><span class="o">.</span><span class="n">transAxes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_stat_annotation</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StatResult</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Try to parse a text annotation as a statistical result.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    text : str</span>
+<span class="sd">        Text content to parse</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Optional[StatResult]</span>
+<span class="sd">        Parsed StatResult or None if not parseable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_stat_dict</span><span class="p">(</span><span class="n">test_type</span><span class="p">,</span> <span class="n">statistic_name</span><span class="p">,</span> <span class="n">statistic_value</span><span class="p">,</span> <span class="n">p_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a simple stat result dict.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_stats._utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">p2stars</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;test_type&quot;</span><span class="p">:</span> <span class="n">test_type</span><span class="p">,</span>
+            <span class="s2">&quot;test_category&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;statistic&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">statistic_name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">statistic_value</span><span class="p">},</span>
+            <span class="s2">&quot;p_value&quot;</span><span class="p">:</span> <span class="n">p_value</span><span class="p">,</span>
+            <span class="s2">&quot;stars&quot;</span><span class="p">:</span> <span class="n">p2stars</span><span class="p">(</span><span class="n">p_value</span><span class="p">,</span> <span class="n">ns_symbol</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Try to detect asterisks pattern</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">,</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span> <span class="s2">&quot;ns&quot;</span><span class="p">,</span> <span class="s2">&quot;n.s.&quot;</span><span class="p">]:</span>
+        <span class="n">stars</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;n.s.&quot;</span><span class="p">,</span> <span class="s2">&quot;ns&quot;</span><span class="p">)</span>
+        <span class="c1"># Can&#39;t determine actual stats, create placeholder</span>
+        <span class="n">p_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;***&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+            <span class="s2">&quot;**&quot;</span><span class="p">:</span> <span class="mf">0.005</span><span class="p">,</span>
+            <span class="s2">&quot;*&quot;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span>
+            <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stars</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_create_stat_dict</span><span class="p">(</span>
+            <span class="n">test_type</span><span class="o">=</span><span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
+            <span class="n">statistic_name</span><span class="o">=</span><span class="s2">&quot;stat&quot;</span><span class="p">,</span>
+            <span class="n">statistic_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">p_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Try to parse patterns like &quot;r = 0.85***&quot; or &quot;(t = 2.5, p &lt; 0.01)&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+    <span class="c1"># Pattern: statistic = value[stars]</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-zA-Z]+)\s*=\s*([\d.-]+)(\*+|ns)?&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="n">stat_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">stat_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">stars</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;ns&quot;</span>
+        <span class="n">p_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;***&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+            <span class="s2">&quot;**&quot;</span><span class="p">:</span> <span class="mf">0.005</span><span class="p">,</span>
+            <span class="s2">&quot;*&quot;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span>
+            <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stars</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_create_stat_dict</span><span class="p">(</span>
+            <span class="n">test_type</span><span class="o">=</span><span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
+            <span class="n">statistic_name</span><span class="o">=</span><span class="n">stat_name</span><span class="p">,</span>
+            <span class="n">statistic_value</span><span class="o">=</span><span class="n">stat_value</span><span class="p">,</span>
+            <span class="n">p_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;add_stat_to_axes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;extract_stats_from_axes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;format_stat_for_plot&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

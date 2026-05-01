@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_bridge._protocol &mdash; scitex-bridge 0.1.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-bridge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_bridge.html">scitex_bridge</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-bridge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_bridge._protocol</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_bridge._protocol</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># File: ./src/scitex/bridge/_protocol.py</span>
+<span class="c1"># Time-stamp: &quot;2024-12-09 09:30:00 (ywatanabe)&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bridge Protocol - Versioning and compatibility for cross-module communication.</span>
+
+<span class="sd">This module defines the bridge protocol version and provides utilities</span>
+<span class="sd">for ensuring compatibility between different versions of scitex modules.</span>
+
+<span class="sd">Protocol Versioning</span>
+<span class="sd">-------------------</span>
+<span class="sd">The bridge protocol version follows semantic versioning:</span>
+<span class="sd">- MAJOR: Breaking changes in bridge interfaces</span>
+<span class="sd">- MINOR: New bridge functions added (backward compatible)</span>
+<span class="sd">- PATCH: Bug fixes (backward compatible)</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    from scitex.bridge import BRIDGE_PROTOCOL_VERSION, check_protocol_compatibility</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Protocol Version</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="n">BRIDGE_PROTOCOL_VERSION</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Current bridge protocol version.</span>
+
+<span class="sd">Changes:</span>
+<span class="sd">- 1.0.0: Initial protocol</span>
+<span class="sd">    - Stats → Plt: add_stat_to_axes, extract_stats_from_axes</span>
+<span class="sd">    - Stats → Vis: stat_result_to_annotation, add_stats_to_figure_model</span>
+<span class="sd">    - Plt → Vis: figure_to_vis_model, axes_to_vis_axes</span>
+<span class="sd">    - Coordinate conventions: axes coords (0-1) for plt, data coords for vis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Protocol Metadata</span>
+<span class="c1"># =============================================================================</span>
+
+
+<div class="viewcode-block" id="ProtocolInfo">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.ProtocolInfo">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProtocolInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bridge protocol information for serialization and compatibility.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    version : str</span>
+<span class="sd">        Protocol version string (semver)</span>
+<span class="sd">    source_module : str</span>
+<span class="sd">        Module that created the data</span>
+<span class="sd">    target_module : str</span>
+<span class="sd">        Target module for the data</span>
+<span class="sd">    coordinate_system : str</span>
+<span class="sd">        Coordinate system used (&quot;axes&quot;, &quot;data&quot;, &quot;figure&quot;, &quot;mm&quot;, &quot;px&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">BRIDGE_PROTOCOL_VERSION</span>
+    <span class="n">source_module</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">target_module</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">coordinate_system</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span>
+
+<div class="viewcode-block" id="ProtocolInfo.to_dict">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.ProtocolInfo.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;bridge_protocol_version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="s2">&quot;source_module&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_module</span><span class="p">,</span>
+            <span class="s2">&quot;target_module&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_module</span><span class="p">,</span>
+            <span class="s2">&quot;coordinate_system&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_system</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ProtocolInfo.from_dict">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.ProtocolInfo.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;ProtocolInfo&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create from dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bridge_protocol_version&quot;</span><span class="p">,</span> <span class="n">BRIDGE_PROTOCOL_VERSION</span><span class="p">),</span>
+            <span class="n">source_module</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_module&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">target_module</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target_module&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">coordinate_system</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinate_system&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Compatibility Utilities</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_version</span><span class="p">(</span><span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a version string into (major, minor, patch) tuple.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    version : str</span>
+<span class="sd">        Version string like &quot;1.2.3&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        (major, minor, patch) integers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">major</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">minor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">patch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">patch</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="check_protocol_compatibility">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.check_protocol_compatibility">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_protocol_compatibility</span><span class="p">(</span>
+    <span class="n">data_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">current_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">BRIDGE_PROTOCOL_VERSION</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a data version is compatible with the current protocol.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_version : str</span>
+<span class="sd">        Version of the data being loaded</span>
+<span class="sd">    current_version : str</span>
+<span class="sd">        Current protocol version (default: BRIDGE_PROTOCOL_VERSION)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        (is_compatible, warning_message)</span>
+<span class="sd">        - is_compatible: True if data can be safely used</span>
+<span class="sd">        - warning_message: None if compatible, else a warning string</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; is_compat, msg = check_protocol_compatibility(&quot;1.0.0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; is_compat</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; is_compat, msg = check_protocol_compatibility(&quot;2.0.0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; is_compat</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; msg</span>
+<span class="sd">    &#39;Major version mismatch: data v2.0.0, current v1.0.0&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_major</span><span class="p">,</span> <span class="n">data_minor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_version</span><span class="p">(</span><span class="n">data_version</span><span class="p">)</span>
+    <span class="n">curr_major</span><span class="p">,</span> <span class="n">curr_minor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_version</span><span class="p">(</span><span class="n">current_version</span><span class="p">)</span>
+
+    <span class="c1"># Major version mismatch = incompatible</span>
+    <span class="k">if</span> <span class="n">data_major</span> <span class="o">!=</span> <span class="n">curr_major</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">False</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Major version mismatch: data v</span><span class="si">{</span><span class="n">data_version</span><span class="si">}</span><span class="s2">, current v</span><span class="si">{</span><span class="n">current_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Minor version newer than current = warning (may have unknown fields)</span>
+    <span class="k">if</span> <span class="n">data_minor</span> <span class="o">&gt;</span> <span class="n">curr_minor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">True</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Data version newer than current: data v</span><span class="si">{</span><span class="n">data_version</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;current v</span><span class="si">{</span><span class="n">current_version</span><span class="si">}</span><span class="s2">. Some features may be ignored.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_protocol_metadata">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.add_protocol_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_protocol_metadata</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">source_module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">target_module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">coordinate_system</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add bridge protocol metadata to a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Data dictionary to annotate</span>
+<span class="sd">    source_module : str</span>
+<span class="sd">        Source module name (e.g., &quot;stats&quot;, &quot;plt&quot;)</span>
+<span class="sd">    target_module : str</span>
+<span class="sd">        Target module name (e.g., &quot;vis&quot;, &quot;plt&quot;)</span>
+<span class="sd">    coordinate_system : str</span>
+<span class="sd">        Coordinate system used (default: &quot;data&quot;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Data with protocol metadata added</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; data = {&quot;x&quot;: 10, &quot;y&quot;: 20}</span>
+<span class="sd">    &gt;&gt;&gt; annotated = add_protocol_metadata(data, &quot;stats&quot;, &quot;vis&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; annotated[&quot;_bridge_protocol&quot;][&quot;bridge_protocol_version&quot;]</span>
+<span class="sd">    &#39;1.0.0&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">protocol</span> <span class="o">=</span> <span class="n">ProtocolInfo</span><span class="p">(</span>
+        <span class="n">source_module</span><span class="o">=</span><span class="n">source_module</span><span class="p">,</span>
+        <span class="n">target_module</span><span class="o">=</span><span class="n">target_module</span><span class="p">,</span>
+        <span class="n">coordinate_system</span><span class="o">=</span><span class="n">coordinate_system</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;_bridge_protocol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="extract_protocol_metadata">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.extract_protocol_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_protocol_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ProtocolInfo</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract bridge protocol metadata from a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Data dictionary that may contain protocol metadata</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ProtocolInfo or None</span>
+<span class="sd">        Protocol info if present, None otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;_bridge_protocol&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ProtocolInfo</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;_bridge_protocol&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Coordinate System Definitions</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="n">COORDINATE_SYSTEMS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Normalized axes coordinates (0-1)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="s2">&quot;y_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="s2">&quot;used_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;plt&quot;</span><span class="p">,</span> <span class="s2">&quot;matplotlib&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Data coordinates (actual x/y values)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Depends on data</span>
+        <span class="s2">&quot;y_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;used_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;vis&quot;</span><span class="p">,</span> <span class="s2">&quot;FigureModel&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;figure&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Figure coordinates (0-1 over entire figure)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="s2">&quot;y_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="s2">&quot;used_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;matplotlib&quot;</span><span class="p">,</span> <span class="s2">&quot;suptitle&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;mm&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Physical millimeters&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Depends on figure size</span>
+        <span class="s2">&quot;y_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;used_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;vis&quot;</span><span class="p">,</span> <span class="s2">&quot;publication&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;px&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Pixels&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Depends on DPI and size</span>
+        <span class="s2">&quot;y_range&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;used_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;canvas&quot;</span><span class="p">,</span> <span class="s2">&quot;gui&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Public API</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;BRIDGE_PROTOCOL_VERSION&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ProtocolInfo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;parse_version&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_protocol_compatibility&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;add_protocol_metadata&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;extract_protocol_metadata&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;COORDINATE_SYSTEMS&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

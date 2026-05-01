@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scitex_bridge._helpers &mdash; scitex-bridge 0.1.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            scitex-bridge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/scitex_bridge.html">scitex_bridge</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scitex-bridge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scitex_bridge._helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scitex_bridge._helpers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># File: ./src/scitex/bridge/_helpers.py</span>
+<span class="c1"># Time-stamp: &quot;2024-12-09 11:00:00 (ywatanabe)&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">High-level helper functions for cross-module operations.</span>
+
+<span class="sd">These helpers provide a unified API for common workflows that span</span>
+<span class="sd">multiple modules, abstracting away backend-specific details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># StatResult is now a dict - the GUI-specific StatResult is deprecated</span>
+<span class="n">StatResult</span> <span class="o">=</span> <span class="nb">dict</span>
+
+
+<div class="viewcode-block" id="add_stats_from_results">
+<a class="viewcode-back" href="../../api/scitex_bridge.html#scitex_bridge.add_stats_from_results">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_stats_from_results</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">,</span>
+    <span class="n">stat_results</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">StatResult</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">StatResult</span><span class="p">]],</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;plt&quot;</span><span class="p">,</span> <span class="s2">&quot;vis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">format_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asterisk&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add statistical results to a figure or axes, auto-detecting backend.</span>
+
+<span class="sd">    This is a high-level helper that works with both matplotlib axes</span>
+<span class="sd">    and vis FigureModel, choosing the appropriate bridge function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    target : matplotlib.axes.Axes, scitex.plt.AxisWrapper, or FigureModel</span>
+<span class="sd">        The target to add statistics to</span>
+<span class="sd">    stat_results : StatResult or List[StatResult]</span>
+<span class="sd">        Statistical result(s) to add</span>
+<span class="sd">    backend : {&quot;auto&quot;, &quot;plt&quot;, &quot;vis&quot;}</span>
+<span class="sd">        Backend to use. &quot;auto&quot; detects from target type:</span>
+<span class="sd">        - matplotlib axes or scitex AxisWrapper → &quot;plt&quot;</span>
+<span class="sd">        - FigureModel → &quot;vis&quot;</span>
+<span class="sd">    format_style : str</span>
+<span class="sd">        Format style for stat text (&quot;asterisk&quot;, &quot;compact&quot;, &quot;detailed&quot;, &quot;publication&quot;)</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional arguments passed to the backend-specific function:</span>
+<span class="sd">        - plt: passed to add_stat_to_axes (x, y, transform, etc.)</span>
+<span class="sd">        - vis: passed to add_stats_to_figure_model (axes_index, auto_position, etc.)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    target</span>
+<span class="sd">        The modified target (for chaining)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # With matplotlib axes</span>
+<span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
+<span class="sd">    &gt;&gt;&gt; stat = create_stat_result(&quot;pearson&quot;, &quot;r&quot;, 0.85, 0.001)</span>
+<span class="sd">    &gt;&gt;&gt; add_stats_from_results(ax, stat)</span>
+
+<span class="sd">    &gt;&gt;&gt; # With vis FigureModel</span>
+<span class="sd">    &gt;&gt;&gt; model = FigureModel(width_mm=170, height_mm=120, axes=[{}])</span>
+<span class="sd">    &gt;&gt;&gt; add_stats_from_results(model, [stat1, stat2], backend=&quot;vis&quot;)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Coordinate conventions differ between backends:</span>
+<span class="sd">    - plt: uses axes coordinates (0-1 normalized) by default</span>
+<span class="sd">    - vis: uses data coordinates</span>
+
+<span class="sd">    For precise control, use the backend-specific functions directly:</span>
+<span class="sd">    - scitex.bridge.add_stat_to_axes (plt backend)</span>
+<span class="sd">    - scitex.bridge.add_stats_to_figure_model (vis backend)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Normalize to list (accept dict, scitex.schema.StatResult, or any non-sequence single result)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stat_results</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">stat_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">stat_results</span><span class="p">]</span>
+
+    <span class="c1"># Auto-detect backend</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">_detect_backend</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="c1"># Dispatch to appropriate function</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;plt&quot;</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_bridge._stats_plt</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_stat_to_axes</span>
+
+        <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">stat_results</span><span class="p">:</span>
+            <span class="n">add_stat_to_axes</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">stat</span><span class="p">,</span> <span class="n">format_style</span><span class="o">=</span><span class="n">format_style</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;vis&quot;</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_bridge._stats_vis</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_stats_to_figure_model</span>
+
+        <span class="n">add_stats_to_figure_model</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">stat_results</span><span class="p">,</span>
+            <span class="n">format_style</span><span class="o">=</span><span class="n">format_style</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown backend: </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">. Use &#39;auto&#39;, &#39;plt&#39;, or &#39;vis&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">target</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_backend</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;plt&quot;</span><span class="p">,</span> <span class="s2">&quot;vis&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Detect the appropriate backend from target type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    target : any</span>
+<span class="sd">        The target object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        &quot;plt&quot; or &quot;vis&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check for vis FigureModel</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex.io.bundle.kinds._plot._models</span><span class="w"> </span><span class="kn">import</span> <span class="n">FigureModel</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">FigureModel</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;vis&quot;</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Check for matplotlib axes</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.axes</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;plt&quot;</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Check for scitex plt wrappers</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;_axes_mpl&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;plt&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;_axes_scitex&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;plt&quot;</span>
+
+    <span class="c1"># Default to plt (most common case)</span>
+    <span class="k">return</span> <span class="s2">&quot;plt&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;add_stats_from_results&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

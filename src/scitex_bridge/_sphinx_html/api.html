@@ -1,0 +1,635 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API &mdash; scitex-bridge 0.1.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8618f531"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scitex_bridge" href="api/scitex_bridge.html" />
+    <link rel="prev" title="scitex-bridge" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            scitex-bridge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.ProtocolInfo"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.version"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.version</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.source_module"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.source_module</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.target_module"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.target_module</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.coordinate_system"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.coordinate_system</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.to_dict"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scitex_bridge.ProtocolInfo.from_dict"><code class="docutils literal notranslate"><span class="pre">ProtocolInfo.from_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.check_protocol_compatibility"><code class="docutils literal notranslate"><span class="pre">check_protocol_compatibility()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.add_protocol_metadata"><code class="docutils literal notranslate"><span class="pre">add_protocol_metadata()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.extract_protocol_metadata"><code class="docutils literal notranslate"><span class="pre">extract_protocol_metadata()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.add_stat_to_axes"><code class="docutils literal notranslate"><span class="pre">add_stat_to_axes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.extract_stats_from_axes"><code class="docutils literal notranslate"><span class="pre">extract_stats_from_axes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.format_stat_for_plot"><code class="docutils literal notranslate"><span class="pre">format_stat_for_plot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.stat_result_to_annotation"><code class="docutils literal notranslate"><span class="pre">stat_result_to_annotation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.add_stats_to_figure_model"><code class="docutils literal notranslate"><span class="pre">add_stats_to_figure_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.position_stat_annotation"><code class="docutils literal notranslate"><span class="pre">position_stat_annotation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.figure_to_vis_model"><code class="docutils literal notranslate"><span class="pre">figure_to_vis_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.axes_to_vis_axes"><code class="docutils literal notranslate"><span class="pre">axes_to_vis_axes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.tracking_to_plot_configs"><code class="docutils literal notranslate"><span class="pre">tracking_to_plot_configs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.collect_figure_data"><code class="docutils literal notranslate"><span class="pre">collect_figure_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.add_stats_from_results"><code class="docutils literal notranslate"><span class="pre">add_stats_from_results()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.save_with_recipe"><code class="docutils literal notranslate"><span class="pre">save_with_recipe()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.load_recipe"><code class="docutils literal notranslate"><span class="pre">load_recipe()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scitex_bridge.has_figrecipe"><code class="docutils literal notranslate"><span class="pre">has_figrecipe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/scitex_bridge.html">scitex_bridge</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scitex-bridge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scitex_bridge">
+<span id="api"></span><h1>API<a class="headerlink" href="#module-scitex_bridge" title="Link to this heading"></a></h1>
+<p>scitex-bridge — cross-module adapters (stats↔plt / stats↔vis / plt↔vis) — standalone.</p>
+<p>SciTeX Bridge Module - Cross-module adapters and transformations.</p>
+<p>This module provides the official API for connecting SciTeX modules:
+- stats ↔ plt: Statistical results to plot annotations
+- stats ↔ vis: Statistical results to vis annotations
+- plt ↔ vis: Matplotlib figures to vis FigureModel</p>
+<p>Design Principles:
+- Bridge functions use only public APIs of each module
+- All transformations go through schema validation
+- Single source of truth for cross-module conventions
+- Protocol versioning for forward/backward compatibility</p>
+<p>Protocol Version: 1.0.0</p>
+<p>Coordinate Conventions:
+- plt bridge: Uses axes coordinates (0-1 normalized)
+- vis bridge: Uses data coordinates (actual x/y values)
+- See COORDINATE_SYSTEMS for full definitions</p>
+<dl>
+<dt>Usage:</dt><dd><dl>
+<dt>from scitex.bridge import (</dt><dd><p># Protocol version
+BRIDGE_PROTOCOL_VERSION,
+check_protocol_compatibility,</p>
+<p># Stats to Plt
+add_stat_to_axes,
+extract_stats_from_axes,</p>
+<p># Stats to Vis
+stat_result_to_annotation,
+add_stats_to_figure_model,</p>
+<p># Plt to Vis
+figure_to_vis_model,
+axes_to_vis_axes,
+tracking_to_plot_configs,</p>
+</dd>
+</dl>
+<p>)</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">ProtocolInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1.0.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_system</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#ProtocolInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.ProtocolInfo" title="Link to this definition"></a></dt>
+<dd><p>Bridge protocol information for serialization and compatibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Protocol version string (semver)</p></li>
+<li><p><strong>source_module</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Module that created the data</p></li>
+<li><p><strong>target_module</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Target module for the data</p></li>
+<li><p><strong>coordinate_system</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Coordinate system used (“axes”, “data”, “figure”, “mm”, “px”)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.version">
+<span class="sig-name descname"><span class="pre">version</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1.0.0'</span></span><a class="headerlink" href="#scitex_bridge.ProtocolInfo.version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.source_module">
+<span class="sig-name descname"><span class="pre">source_module</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#scitex_bridge.ProtocolInfo.source_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.target_module">
+<span class="sig-name descname"><span class="pre">target_module</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#scitex_bridge.ProtocolInfo.target_module" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.coordinate_system">
+<span class="sig-name descname"><span class="pre">coordinate_system</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'data'</span></span><a class="headerlink" href="#scitex_bridge.ProtocolInfo.coordinate_system" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#ProtocolInfo.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.ProtocolInfo.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Convert to dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scitex_bridge.ProtocolInfo.from_dict">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#ProtocolInfo.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.ProtocolInfo.from_dict" title="Link to this definition"></a></dt>
+<dd><p>Create from dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="api/scitex_bridge.html#scitex_bridge.ProtocolInfo" title="scitex_bridge._protocol.ProtocolInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtocolInfo</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.check_protocol_compatibility">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">check_protocol_compatibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1.0.0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#check_protocol_compatibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.check_protocol_compatibility" title="Link to this definition"></a></dt>
+<dd><p>Check if a data version is compatible with the current protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Version of the data being loaded</p></li>
+<li><p><strong>current_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Current protocol version (default: BRIDGE_PROTOCOL_VERSION)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(is_compatible, warning_message)
+- is_compatible: True if data can be safely used
+- warning_message: None if compatible, else a warning string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_compat</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_protocol_compatibility</span><span class="p">(</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_compat</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_compat</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_protocol_compatibility</span><span class="p">(</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_compat</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span>
+<span class="go">&#39;Major version mismatch: data v2.0.0, current v1.0.0&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.add_protocol_metadata">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">add_protocol_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate_system</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#add_protocol_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.add_protocol_metadata" title="Link to this definition"></a></dt>
+<dd><p>Add bridge protocol metadata to a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Data dictionary to annotate</p></li>
+<li><p><strong>source_module</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Source module name (e.g., “stats”, “plt”)</p></li>
+<li><p><strong>target_module</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Target module name (e.g., “vis”, “plt”)</p></li>
+<li><p><strong>coordinate_system</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Coordinate system used (default: “data”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Data with protocol metadata added</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">annotated</span> <span class="o">=</span> <span class="n">add_protocol_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;vis&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">annotated</span><span class="p">[</span><span class="s2">&quot;_bridge_protocol&quot;</span><span class="p">][</span><span class="s2">&quot;bridge_protocol_version&quot;</span><span class="p">]</span>
+<span class="go">&#39;1.0.0&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.extract_protocol_metadata">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">extract_protocol_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_protocol.html#extract_protocol_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.extract_protocol_metadata" title="Link to this definition"></a></dt>
+<dd><p>Extract bridge protocol metadata from a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Data dictionary that may contain protocol metadata</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Protocol info if present, None otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="api/scitex_bridge.html#scitex_bridge.ProtocolInfo" title="scitex_bridge.ProtocolInfo">ProtocolInfo</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.add_stat_to_axes">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">add_stat_to_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asterisk'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_plt.html#add_stat_to_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.add_stat_to_axes" title="Link to this definition"></a></dt>
+<dd><p>Add a statistical result annotation to a matplotlib axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em> or </em><em>scitex.plt AxisWrapper</em>) – The axes to annotate</p></li>
+<li><p><strong>stat_result</strong> (<em>StatResult</em>) – The statistical result to display</p></li>
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – X position for the annotation. If None, uses stat_result.positioning</p></li>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Y position for the annotation. If None, uses stat_result.positioning</p></li>
+<li><p><strong>format_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Format style for the text (“asterisk”, “compact”, “detailed”, “publication”)</p></li>
+<li><p><strong>**kwargs</strong> – Additional kwargs passed to ax.annotate() or ax.text()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created annotation object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.text.Text or matplotlib.text.Annotation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.extract_stats_from_axes">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">extract_stats_from_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_non_stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_plt.html#extract_stats_from_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.extract_stats_from_axes" title="Link to this definition"></a></dt>
+<dd><p>Extract StatResult objects from axes annotations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em> or </em><em>scitex.plt AxisWrapper</em>) – The axes to extract stats from</p></li>
+<li><p><strong>include_non_stat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, create basic StatResult for non-stat annotations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of StatResult objects found in annotations</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[StatResult]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.format_stat_for_plot">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">format_stat_for_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asterisk'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_plt.html#format_stat_for_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.format_stat_for_plot" title="Link to this definition"></a></dt>
+<dd><p>Format a StatResult for display on a plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stat_result</strong> (<em>StatResult</em>) – The statistical result to format</p></li>
+<li><p><strong>format_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – One of “asterisk”, “compact”, “detailed”, “publication”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted string for plot annotation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.stat_result_to_annotation">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">stat_result_to_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asterisk'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_vis.html#stat_result_to_annotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.stat_result_to_annotation" title="Link to this definition"></a></dt>
+<dd><p>Convert a StatResult to a vis AnnotationModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stat_result</strong> (<em>StatResult</em>) – The statistical result to convert</p></li>
+<li><p><strong>format_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Format style for the text (“asterisk”, “compact”, “detailed”, “publication”)</p></li>
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – X position (data coordinates). Overrides stat_result positioning</p></li>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Y position (data coordinates). Overrides stat_result positioning</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Annotation model for vis rendering</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AnnotationModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.add_stats_to_figure_model">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">add_stats_to_figure_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asterisk'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_vis.html#add_stats_to_figure_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.add_stats_to_figure_model" title="Link to this definition"></a></dt>
+<dd><p>Add statistical results as annotations to a FigureModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>figure_model</strong> (<em>FigureModel</em>) – The figure model to annotate</p></li>
+<li><p><strong>stat_results</strong> (<em>List</em><em>[</em><em>StatResult</em><em>]</em>) – List of statistical results to add</p></li>
+<li><p><strong>axes_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Index of axes to add annotations to</p></li>
+<li><p><strong>format_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Format style for the text</p></li>
+<li><p><strong>auto_position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to automatically position stats to avoid overlap</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified figure model (same instance)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FigureModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.position_stat_annotation">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">position_stat_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stat_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">existing_positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preferred_corner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'top-right'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_stats_vis.html#position_stat_annotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.position_stat_annotation" title="Link to this definition"></a></dt>
+<dd><p>Calculate optimal position for a stat annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stat_result</strong> (<em>StatResult</em>) – The statistical result to position</p></li>
+<li><p><strong>axes_bounds</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Axes bounds with keys: x_min, x_max, y_min, y_max</p></li>
+<li><p><strong>existing_positions</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em><em>, </em><em>optional</em>) – List of existing annotation positions to avoid</p></li>
+<li><p><strong>preferred_corner</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Preferred corner: “top-left”, “top-right”, “bottom-left”, “bottom-right”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Calculated position in data coordinates</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Position</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.figure_to_vis_model">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">figure_to_vis_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_plt_vis.html#figure_to_vis_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.figure_to_vis_model" title="Link to this definition"></a></dt>
+<dd><p>Convert a scitex.plt figure to a vis FigureModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<em>scitex.plt.FigWrapper</em><em> or </em><em>matplotlib.figure.Figure</em>) – The figure to convert</p></li>
+<li><p><strong>include_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to include plot data in the model</p></li>
+<li><p><strong>include_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to include style information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The vis figure model</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FigureModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.axes_to_vis_axes">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">axes_to_vis_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scitex_ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_plt_vis.html#axes_to_vis_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.axes_to_vis_axes" title="Link to this definition"></a></dt>
+<dd><p>Convert a matplotlib axes to a vis AxesModel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em>) – The axes to convert</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Row position in layout</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Column position in layout</p></li>
+<li><p><strong>scitex_ax</strong> (<em>AxisWrapper</em><em>, </em><em>optional</em>) – Scitex axis wrapper with tracking history</p></li>
+<li><p><strong>include_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to include plot data</p></li>
+<li><p><strong>include_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to include style information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The vis axes model</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AxesModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.tracking_to_plot_configs">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">tracking_to_plot_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_plt_vis.html#tracking_to_plot_configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.tracking_to_plot_configs" title="Link to this definition"></a></dt>
+<dd><p>Convert scitex.plt tracking history to PlotModel configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>history</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>Tuple</em><em>]</em>) – Tracking history from AxisWrapper
+Format: {id: (id, method_name, tracked_dict, kwargs)}</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of PlotModel configurations</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[PlotModel]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.collect_figure_data">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">collect_figure_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_plt_vis.html#collect_figure_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.collect_figure_data" title="Link to this definition"></a></dt>
+<dd><p>Collect all data from a figure for export.</p>
+<p>This is a simpler version that just extracts data without
+full vis model conversion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fig</strong> (<em>scitex.plt.FigWrapper</em><em> or </em><em>matplotlib.figure.Figure</em>) – The figure to collect data from</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with figure data organized by axes/plot</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.add_stats_from_results">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">add_stats_from_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asterisk'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_helpers.html#add_stats_from_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.add_stats_from_results" title="Link to this definition"></a></dt>
+<dd><p>Add statistical results to a figure or axes, auto-detecting backend.</p>
+<p>This is a high-level helper that works with both matplotlib axes
+and vis FigureModel, choosing the appropriate bridge function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>scitex.plt.AxisWrapper</em><em>, or </em><em>FigureModel</em>) – The target to add statistics to</p></li>
+<li><p><strong>stat_results</strong> (<em>StatResult</em><em> or </em><em>List</em><em>[</em><em>StatResult</em><em>]</em>) – Statistical result(s) to add</p></li>
+<li><p><strong>backend</strong> (<em>{&quot;auto&quot;</em><em>, </em><em>&quot;plt&quot;</em><em>, </em><em>&quot;vis&quot;}</em>) – Backend to use. “auto” detects from target type:
+- matplotlib axes or scitex AxisWrapper → “plt”
+- FigureModel → “vis”</p></li>
+<li><p><strong>format_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Format style for stat text (“asterisk”, “compact”, “detailed”, “publication”)</p></li>
+<li><p><strong>**kwargs</strong> – Additional arguments passed to the backend-specific function:
+- plt: passed to add_stat_to_axes (x, y, transform, etc.)
+- vis: passed to add_stats_to_figure_model (axes_index, auto_position, etc.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified target (for chaining)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>target</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># With matplotlib axes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stat</span> <span class="o">=</span> <span class="n">create_stat_result</span><span class="p">(</span><span class="s2">&quot;pearson&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_stats_from_results</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">stat</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># With vis FigureModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">FigureModel</span><span class="p">(</span><span class="n">width_mm</span><span class="o">=</span><span class="mi">170</span><span class="p">,</span> <span class="n">height_mm</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[{}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_stats_from_results</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="n">stat1</span><span class="p">,</span> <span class="n">stat2</span><span class="p">],</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;vis&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>Coordinate conventions differ between backends:
+- plt: uses axes coordinates (0-1 normalized) by default
+- vis: uses data coordinates</p>
+<p>For precise control, use the backend-specific functions directly:
+- scitex.bridge.add_stat_to_axes (plt backend)
+- scitex.bridge.add_stats_to_figure_model (vis backend)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.save_with_recipe">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">save_with_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_recipe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_figrecipe.html#save_with_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.save_with_recipe" title="Link to this definition"></a></dt>
+<dd><p>Save figure with both CSV and figrecipe recipe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<em>FigWrapper</em><em> or </em><em>matplotlib Figure</em>) – The figure to save.</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>Path</em>) – Output path. Can be:
+- Directory path (creates bundle)
+- File path with .zip extension (creates zip bundle)
+- File path with image extension (saves image + sidecar files)</p></li>
+<li><p><strong>include_csv</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, save SigmaPlot-compatible CSV.</p></li>
+<li><p><strong>include_recipe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, save figrecipe YAML recipe (requires figrecipe).</p></li>
+<li><p><strong>data_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Format for recipe data: ‘csv’, ‘npz’, or ‘inline’.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Resolution for image output.</p></li>
+<li><p><strong>**kwargs</strong> – Additional arguments passed to savefig (including facecolor).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Paths to saved files: {‘image’: Path, ‘csv’: Path, ‘recipe’: Path}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.load_recipe">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">load_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_figrecipe.html#load_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.load_recipe" title="Link to this definition"></a></dt>
+<dd><p>Load figrecipe recipe from FTS bundle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>Path</em>) – Path to bundle directory, zip file, or recipe.yaml.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(fig, axes) reproduced from recipe.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scitex_bridge.has_figrecipe">
+<span class="sig-prename descclassname"><span class="pre">scitex_bridge.</span></span><span class="sig-name descname"><span class="pre">has_figrecipe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scitex_bridge/_figrecipe.html#has_figrecipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scitex_bridge.has_figrecipe" title="Link to this definition"></a></dt>
+<dd><p>Check if figrecipe is available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="scitex-bridge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/scitex_bridge.html" class="btn btn-neutral float-right" title="scitex_bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
