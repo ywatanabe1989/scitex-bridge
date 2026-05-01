@@ -87,7 +87,7 @@ The umbrella package's `scitex.bridge` import path is preserved via a
 
 `scitex-bridge` is part of [**SciTeX**](https://scitex.ai). Install via
 the umbrella with `pip install scitex[bridge]` to use as
-`scitex.bridge` (Python).
+`scitex.bridge` (Python) or `scitex bridge ...` (CLI).
 
 >Four Freedoms for Research
 >
