@@ -38,7 +38,7 @@ import scitex_bridge as br
 
 ## 1 Interfaces
 
-<details>
+<details open>
 <summary><strong>Python API</strong></summary>
 
 <br>
