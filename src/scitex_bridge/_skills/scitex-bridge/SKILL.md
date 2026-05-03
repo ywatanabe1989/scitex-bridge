@@ -1,16 +1,17 @@
 ---
 name: scitex-bridge
-description: Cross-module adapters (stats↔plt, stats↔vis, plt↔vis). Converts `scitex_stats` test results into matplotlib annotations (p-values, significance bars, effect-size labels) without re-implementing the formatter in every plotting helper. Drop-in replacement for `ax.text(x, y, f'p={p:.3f}*')` boilerplate.
+description: |
+  [WHAT] Cross-module adapters (stats↔plt, stats↔vis, plt↔vis).
+  [WHEN] User asks about scitex-bridge functionality.
+  [HOW] `pip install scitex-bridge` then `import scitex_bridge`; see leaf skills for details.
+tags: [scitex-bridge]
 primary_interface: python
 interfaces:
   python: 2
   cli: 0
   mcp: 0
   skills: 2
-  hook: 0
   http: 0
-canonical-location: scitex-bridge/src/scitex_bridge/_skills/scitex-bridge/SKILL.md
-tags: [scitex-bridge, scitex-package]
 ---
 
 > **Interfaces:** Python ⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP —
