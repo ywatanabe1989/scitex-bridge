@@ -16,7 +16,7 @@ The bridge protocol version follows semantic versioning:
 - PATCH: Bug fixes (backward compatible)
 
 Usage:
-    from scitex.bridge import BRIDGE_PROTOCOL_VERSION, check_protocol_compatibility
+    from scitex_bridge import BRIDGE_PROTOCOL_VERSION, check_protocol_compatibility
 """
 
 from dataclasses import dataclass

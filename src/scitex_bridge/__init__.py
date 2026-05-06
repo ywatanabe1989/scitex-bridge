@@ -24,7 +24,7 @@ Coordinate Conventions:
 - See COORDINATE_SYSTEMS for full definitions
 
 Usage:
-    from scitex.bridge import (
+    from scitex_bridge import (
         # Protocol version
         BRIDGE_PROTOCOL_VERSION,
         check_protocol_compatibility,
