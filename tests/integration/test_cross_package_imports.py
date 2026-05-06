@@ -15,9 +15,9 @@ import pytest
 
 # ===== AUTO-GENERATED: cross-package imports =====
 CROSS_PACKAGE_IMPORTS = [
-    'scitex.io.bundle._bundle._storage',
-    'scitex.io.bundle.kinds._plot._models',
-    'scitex.io.bundle.kinds._stats',
+    'scitex_io.bundle._bundle._storage',
+    'scitex_io.bundle.kinds._plot._models',
+    'scitex_io.bundle.kinds._stats',
     'scitex_stats._utils',
 ]
 # ===== END AUTO-GENERATED =====
