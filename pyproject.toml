@@ -20,7 +20,6 @@ classifiers = [
 dependencies = [
     "matplotlib",
     "scipy",
-    "scitex",
     "scitex-stats>=0.2.0",
     "scitex-io>=0.2.0",
 ]
