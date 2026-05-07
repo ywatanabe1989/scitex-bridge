@@ -31,6 +31,32 @@
 pip install scitex-bridge
 ```
 
+## Architecture
+
+```
+src/scitex_bridge/
+├── _protocol.py    # cross-package adapter Protocols
+├── _figrecipe.py   # bridge into figrecipe (figure recipes)
+├── _plt_vis.py     # plt -> visualization handoff
+├── _stats_plt.py   # stats -> plt handoff
+├── _stats_vis.py   # stats -> vis handoff
+├── _helpers.py     # shared adapter helpers
+├── _compat.py      # version/back-compat shims
+└── _skills/        # SciTeX skills metadata
+```
+
+## Demo
+
+```mermaid
+flowchart LR
+    Stats[scitex-stats] --> Bridge[scitex_bridge]
+    Plt[scitex-plt] --> Bridge
+    Fig[figrecipe] --> Bridge
+    Bridge --> Adapt[Protocol adapters]
+    Adapt --> Vis[scitex-vis / plt rendering]
+    Adapt --> Recipe[figure recipes]
+```
+
 ## Quick Start
 
 ```python
