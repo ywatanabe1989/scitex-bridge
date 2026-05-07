@@ -108,19 +108,35 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_io.bundle.kinds._stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">._compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex.io.bundle.kinds._stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">._compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
 
-<span class="c1"># Legacy model imports - may not be available</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_io.bundle.kinds._plot._models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-        <span class="n">AnnotationModel</span><span class="p">,</span>
-        <span class="n">AxesModel</span><span class="p">,</span>
-        <span class="n">FigureModel</span><span class="p">,</span>
-        <span class="n">TextStyle</span><span class="p">,</span>
-    <span class="p">)</span>
 
+<span class="c1"># Legacy model imports — try standalone scitex_io path first, then</span>
+<span class="c1"># umbrella scitex.io path (the standalone split removed the bundle</span>
+<span class="c1"># subtree from scitex_io but the umbrella still ships it).</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_legacy_models</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+
+    <span class="k">for</span> <span class="n">mod_path</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">&quot;scitex_io.bundle.kinds._plot._models&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scitex.io.bundle.kinds._plot._models&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">AnnotationModel</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">AxesModel</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">FigureModel</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">TextStyle</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">continue</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">_legacy</span> <span class="o">=</span> <span class="n">_import_legacy_models</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">_legacy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">AnnotationModel</span><span class="p">,</span> <span class="n">AxesModel</span><span class="p">,</span> <span class="n">FigureModel</span><span class="p">,</span> <span class="n">TextStyle</span> <span class="o">=</span> <span class="n">_legacy</span>
     <span class="n">VIS_MODEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<span class="k">else</span><span class="p">:</span>
     <span class="n">AnnotationModel</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">FigureModel</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">AxesModel</span> <span class="o">=</span> <span class="kc">None</span>

@@ -195,14 +195,21 @@
 <span class="sd">    str</span>
 <span class="sd">        &quot;plt&quot; or &quot;vis&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Check for vis FigureModel</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_io.bundle.kinds._plot._models</span><span class="w"> </span><span class="kn">import</span> <span class="n">FigureModel</span>
+    <span class="c1"># Check for vis FigureModel — try standalone scitex_io path first,</span>
+    <span class="c1"># then umbrella scitex.io fallback (the standalone split removed</span>
+    <span class="c1"># bundle.kinds._plot from scitex_io but the umbrella still has it).</span>
+    <span class="k">for</span> <span class="n">_mod_path</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">&quot;scitex_io.bundle.kinds._plot._models&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scitex.io.bundle.kinds._plot._models&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">FigureModel</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;vis&quot;</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">pass</span>
+            <span class="n">_m</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_mod_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">_m</span><span class="o">.</span><span class="n">FigureModel</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;vis&quot;</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">continue</span>
 
     <span class="c1"># Check for matplotlib axes</span>
     <span class="k">try</span><span class="p">:</span>
