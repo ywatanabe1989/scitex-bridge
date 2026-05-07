@@ -115,14 +115,21 @@ def _detect_backend(target) -> Literal["plt", "vis"]:
     str
         "plt" or "vis"
     """
-    # Check for vis FigureModel
-    try:
-        from scitex_io.bundle.kinds._plot._models import FigureModel
+    # Check for vis FigureModel — try standalone scitex_io path first,
+    # then umbrella scitex.io fallback (the standalone split removed
+    # bundle.kinds._plot from scitex_io but the umbrella still has it).
+    for _mod_path in (
+        "scitex_io.bundle.kinds._plot._models",
+        "scitex.io.bundle.kinds._plot._models",
+    ):
+        try:
+            import importlib
 
-        if isinstance(target, FigureModel):
-            return "vis"
-    except ImportError:
-        pass
+            _m = importlib.import_module(_mod_path)
+            if isinstance(target, _m.FigureModel):
+                return "vis"
+        except ImportError:
+            continue
 
     # Check for matplotlib axes
     try:

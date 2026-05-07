@@ -13,22 +13,53 @@ Provides adapters to:
 import warnings
 from typing import Any, Dict, List, Optional, Tuple
 
-# Legacy model imports - deprecated module, suppress warnings
-try:
+
+# Legacy model imports — deprecated module, suppress warnings.
+#
+# Models historically lived in `scitex_io.bundle.kinds._plot._models`
+# but the standalone scitex-io split removed that path; the umbrella
+# `scitex.io.bundle.kinds._plot._models` still ships them. Try
+# standalone first, then umbrella, before giving up.
+def _import_vis_models():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
-        from scitex_io.bundle.kinds._plot._models import (
-            AnnotationModel,
-            AxesModel,
-            AxesStyle,
-            FigureModel,
-            GuideModel,
-            PlotModel,
-            PlotStyle,
-            TextStyle,
-        )
+        for mod_path in (
+            "scitex_io.bundle.kinds._plot._models",
+            "scitex.io.bundle.kinds._plot._models",
+        ):
+            try:
+                import importlib
+
+                m = importlib.import_module(mod_path)
+                return (
+                    m.AnnotationModel,
+                    m.AxesModel,
+                    m.AxesStyle,
+                    m.FigureModel,
+                    m.GuideModel,
+                    m.PlotModel,
+                    m.PlotStyle,
+                    m.TextStyle,
+                )
+            except ImportError:
+                continue
+    return None
+
+
+_models = _import_vis_models()
+if _models is not None:
+    (
+        AnnotationModel,
+        AxesModel,
+        AxesStyle,
+        FigureModel,
+        GuideModel,
+        PlotModel,
+        PlotStyle,
+        TextStyle,
+    ) = _models
     VIS_MODEL_AVAILABLE = True
-except ImportError:
+else:
     FigureModel = AxesModel = PlotModel = AnnotationModel = None
     GuideModel = PlotStyle = AxesStyle = TextStyle = None
     VIS_MODEL_AVAILABLE = False

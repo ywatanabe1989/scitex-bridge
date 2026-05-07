@@ -31,19 +31,35 @@ from typing import Dict, List, Optional, Tuple
 try:
     from scitex_io.bundle.kinds._stats import Position
 except ImportError:
-    from ._compat import Position
+    try:
+        from scitex.io.bundle.kinds._stats import Position
+    except ImportError:
+        from ._compat import Position
 
-# Legacy model imports - may not be available
-try:
-    from scitex_io.bundle.kinds._plot._models import (
-        AnnotationModel,
-        AxesModel,
-        FigureModel,
-        TextStyle,
-    )
 
+# Legacy model imports — try standalone scitex_io path first, then
+# umbrella scitex.io path (the standalone split removed the bundle
+# subtree from scitex_io but the umbrella still ships it).
+def _import_legacy_models():
+    import importlib
+
+    for mod_path in (
+        "scitex_io.bundle.kinds._plot._models",
+        "scitex.io.bundle.kinds._plot._models",
+    ):
+        try:
+            m = importlib.import_module(mod_path)
+            return m.AnnotationModel, m.AxesModel, m.FigureModel, m.TextStyle
+        except ImportError:
+            continue
+    return None
+
+
+_legacy = _import_legacy_models()
+if _legacy is not None:
+    AnnotationModel, AxesModel, FigureModel, TextStyle = _legacy
     VIS_MODEL_AVAILABLE = True
-except ImportError:
+else:
     AnnotationModel = None
     FigureModel = None
     AxesModel = None
