@@ -15,14 +15,19 @@ in its source tree. Two outcomes:
   test is SKIPPED via `pytest.importorskip`. The umbrella's CI
   (which installs every peer) catches cross-package renames.
 """
+
 import pytest
 
 # ===== AUTO-GENERATED: cross-package imports =====
 CROSS_PACKAGE_IMPORTS = [
-    'scitex_io.bundle._bundle._storage',
-    'scitex_io.bundle.kinds._plot._models',
-    'scitex_io.bundle.kinds._stats',
-    'scitex_stats._utils',
+    "scitex_io.bundle._bundle._storage",
+    "scitex_io.bundle.kinds._plot._models",
+    "scitex_io.bundle.kinds._stats",
+    "scitex_stats._utils",
+    # Umbrella fallbacks added when standalone scitex_io.bundle subtree
+    # is unavailable (the standalone split removed it; umbrella still ships).
+    "scitex.io.bundle.kinds._plot._models",
+    "scitex.io.bundle.kinds._stats",
 ]
 # ===== END AUTO-GENERATED =====
 
