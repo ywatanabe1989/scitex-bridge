@@ -21,18 +21,18 @@ def test_audit_all_clean():
         audit_all_for_package(
             "scitex-bridge",
             skip_rules=(
-                # PA304: `from scitex.io.bundle.kinds._stats import Position`
+                # PA-304: `from scitex.io.bundle.kinds._stats import Position`
                 # is an intentional umbrella fallback — the standalone-scitex-io
                 # split removed `scitex_io.bundle.kinds._stats`. We try the
                 # standalone path first, then fall back to umbrella, in
                 # _stats_vis.py / _plt_vis.py / _helpers.py.
-                "PA304",
-                # PS140: the cross-package gate is auto-generated from
+                "PA-304",
+                # PS-140: the cross-package gate is auto-generated from
                 # static `from X import Y` scans; we now use
                 # `importlib.import_module(<string>)` for the umbrella
                 # fallback which the auditor doesn't detect, so it flags
                 # gate entries as stale. Hand-maintained for now.
-                "PS140",
+                "PS-140",
             ),
         )
     except TypeError:
