@@ -9,7 +9,7 @@
 <p align="center"><b>Cross-module adapters between scitex.stats / matplotlib / vis-FigureModel.</b></p>
 
 <p align="center">
-  <a href="https://scitex-bridge.readthedocs.io/">Full Documentation</a> · <code>pip install scitex-bridge</code>
+  <a href="https://scitex-bridge.readthedocs.io/">Full Documentation</a> · <code>uv pip install scitex-bridge[all]</code>
 </p>
 
 <!-- scitex-badges:start -->
