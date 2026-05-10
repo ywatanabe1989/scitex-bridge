@@ -108,10 +108,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scitex_io.bundle.kinds._stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">scitex.io.bundle.kinds._stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">._compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">._compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
 
 
 <span class="c1"># Legacy model imports — try standalone scitex_io path first, then</span>
