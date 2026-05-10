@@ -31,10 +31,7 @@ from typing import Dict, List, Optional, Tuple
 try:
     from scitex_io.bundle.kinds._stats import Position
 except ImportError:
-    try:
-        from scitex.io.bundle.kinds._stats import Position
-    except ImportError:
-        from ._compat import Position
+    from ._compat import Position
 
 
 # Legacy model imports — try standalone scitex_io path first, then

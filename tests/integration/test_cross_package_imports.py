@@ -23,9 +23,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex_io.bundle._bundle._storage",
     "scitex_io.bundle.kinds._stats",
     "scitex_stats._utils",
-    # Umbrella fallback added when the standalone scitex_io.bundle subtree
-    # is unavailable (the standalone split removed it; umbrella still ships).
-    "scitex.io.bundle.kinds._stats",
 ]
 # ===== END AUTO-GENERATED =====
 
