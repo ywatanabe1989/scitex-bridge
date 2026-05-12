@@ -8,6 +8,7 @@ dist/
 .pytest_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
 .tox/
 .mypy_cache/
@@ -18,3 +19,11 @@ docs/sphinx/_build/
 docs/sphinx/api/
 *.swp
 .DS_Store
+
+# Local runtime state (e.g. agent transcripts) lives under .scitex/.
+# `.scitex/dev/config.yaml` is the only file in this tree we track —
+# it carries the audit root-whitelist; everything else is local-only.
+.scitex/*
+!.scitex/dev/
+.scitex/dev/*
+!.scitex/dev/config.yaml

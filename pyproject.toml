@@ -70,3 +70,8 @@ ignore = ["E501"]
 
 [tool.scitex-linter]
 library_dirs = ["src", "tests", "examples", "apps", "config", "docs"]
+
+[tool.coverage.run]
+parallel = true
+source = ["scitex_bridge"]
+concurrency = ["multiprocessing", "thread"]

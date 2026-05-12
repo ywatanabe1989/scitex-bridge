@@ -17,14 +17,13 @@ The FTS bundle structure:
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
-# Check figrecipe availability
-try:
-    import figrecipe as fr
-    from figrecipe._serializer import save_recipe as _fr_save_recipe
+from scitex_dev import try_import_optional
 
-    FIGRECIPE_AVAILABLE = True
-except ImportError:
-    FIGRECIPE_AVAILABLE = False
+# Check figrecipe availability — figrecipe is not declared as a pip
+# extra (it's a peer SciTeX package), so omit `extra=`/`pkg=`.
+fr = try_import_optional("figrecipe")
+_fr_save_recipe = try_import_optional("figrecipe._serializer", "save_recipe")
+FIGRECIPE_AVAILABLE = fr is not None and _fr_save_recipe is not None
 
 
 def save_with_recipe(

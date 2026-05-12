@@ -1,0 +1,23 @@
+coverage:
+  status:
+    project:
+      default:
+        # scitex-bridge is mostly thin adapters between scitex.stats /
+        # matplotlib / FigureModel; coverage is still ramping while the
+        # umbrella's bundle.kinds layout stabilises. Switch to a hard
+        # `target: 90%` once `_plt_vis` / `_stats_vis` round-trips are
+        # exercised under the umbrella in CI (the standalone-only run
+        # importorskip-s most of those bodies).
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+  precision: 2
+  round: down
+  range: "70...90"
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
