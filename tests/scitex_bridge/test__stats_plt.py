@@ -14,29 +14,49 @@ pytest.importorskip("scitex")
 class TestFormatStatForPlot:
     """Tests for format_stat_for_plot function."""
 
-    def test_asterisk_format(self):
+    def test_asterisk_format_text_equals_case(self):
         """Test asterisk formatting."""
+        # Arrange
         from scitex.schema import create_stat_result
 
         from scitex_bridge import format_stat_for_plot
 
         result = create_stat_result("t-test", "t", 2.5, 0.001)
+        # Act
         text = format_stat_for_plot(result, "asterisk")
+        # Assert
         assert text == "***"
 
-    def test_compact_format(self):
-        """Test compact formatting."""
+    def test_compact_format_r_0_850_in_text(self):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import format_stat_for_plot
-
         result = create_stat_result("pearson", "r", 0.85, 0.001)
+        # Act
         text = format_stat_for_plot(result, "compact")
+        # Act
+        # Assert
+        # Assert
         assert "r = 0.850" in text
+
+    def test_compact_format_in_text(self):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import format_stat_for_plot
+        result = create_stat_result("pearson", "r", 0.85, 0.001)
+        # Act
+        text = format_stat_for_plot(result, "compact")
+        # Act
+        # Assert
+        # Assert
         assert "***" in text
 
-    def test_ns_format(self):
+
+    def test_ns_format_text_equals_ns(self):
         """Test non-significant formatting."""
+        # Arrange
         from scitex.schema import StatResult
 
         from scitex_bridge import format_stat_for_plot
@@ -49,7 +69,9 @@ class TestFormatStatForPlot:
             p_value=0.6,
             stars="ns",
         )
+        # Act
         text = format_stat_for_plot(result, "asterisk")
+        # Assert
         assert text == "ns"
 
 
@@ -65,29 +87,59 @@ class TestAddStatToAxes:
         yield ax
         plt.close(fig)
 
-    def test_add_stat_creates_annotation(self, mock_ax):
-        """Test that add_stat_to_axes creates an annotation."""
+    def test_add_stat_creates_annotation_annotation_is_not_none(self, mock_ax):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import add_stat_to_axes
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
         annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
-
+        # Act
+        # Assert
+        # Assert
         assert annotation is not None
+
+    def test_add_stat_creates_annotation_annotation_get_text(self, mock_ax):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import add_stat_to_axes
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
+        annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
+        # Act
+        # Assert
+        # Assert
         assert annotation.get_text() == "**"
 
-    def test_stat_result_stored_on_annotation(self, mock_ax):
-        """Test that StatResult is stored on annotation."""
+
+    def test_stat_result_stored_on_annotation_hasattr_annotation_scitex_stat_result(self, mock_ax):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import add_stat_to_axes
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
         annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
-
+        # Act
+        # Assert
+        # Assert
         assert hasattr(annotation, "_scitex_stat_result")
+
+    def test_stat_result_stored_on_annotation_annotation_scitex_stat_result_is_result(self, mock_ax):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import add_stat_to_axes
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
+        annotation = add_stat_to_axes(mock_ax, result, x=0.5, y=0.9)
+        # Act
+        # Assert
+        # Assert
         assert annotation._scitex_stat_result is result
+
 
 
 class TestExtractStatsFromAxes:
@@ -109,14 +161,39 @@ class TestExtractStatsFromAxes:
         yield ax
         plt.close(fig)
 
-    def test_extract_returns_stat_results(self, ax_with_stats):
-        """Test extraction of StatResults from axes."""
+    def test_extract_returns_stat_results_len_stats_is_2(self, ax_with_stats):
+        # Arrange
+        # Arrange
         from scitex_bridge import extract_stats_from_axes
-
+        # Act
         stats = extract_stats_from_axes(ax_with_stats)
+        # Act
+        # Assert
+        # Assert
         assert len(stats) == 2
+
+    def test_extract_returns_stat_results_stats_0_test_type_t_test(self, ax_with_stats):
+        # Arrange
+        # Arrange
+        from scitex_bridge import extract_stats_from_axes
+        # Act
+        stats = extract_stats_from_axes(ax_with_stats)
+        # Act
+        # Assert
+        # Assert
         assert stats[0].test_type == "t-test"
+
+    def test_extract_returns_stat_results_stats_1_test_type_pearson(self, ax_with_stats):
+        # Arrange
+        # Arrange
+        from scitex_bridge import extract_stats_from_axes
+        # Act
+        stats = extract_stats_from_axes(ax_with_stats)
+        # Act
+        # Assert
+        # Assert
         assert stats[1].test_type == "pearson"
+
 
 
 # EOF

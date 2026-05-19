@@ -14,45 +14,104 @@ pytest.importorskip("scitex.io.bundle.kinds._plot._models")
 class TestStatResultToAnnotation:
     """Tests for stat_result_to_annotation function."""
 
-    def test_creates_annotation_model(self):
-        """Test that function creates AnnotationModel."""
+    def test_creates_annotation_model_annotation_is_annotationmodel(self):
+        # Arrange
+        # Arrange
         from scitex.io.bundle.kinds._plot._models import AnnotationModel
         from scitex.schema import create_stat_result
-
         from scitex_bridge import stat_result_to_annotation
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
         annotation = stat_result_to_annotation(result)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(annotation, AnnotationModel)
+
+    def test_creates_annotation_model_annotation_text_equals_case(self):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import AnnotationModel
+        from scitex.schema import create_stat_result
+        from scitex_bridge import stat_result_to_annotation
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
+        annotation = stat_result_to_annotation(result)
+        # Act
+        # Assert
+        # Assert
         assert annotation.text == "**"
+
+    def test_creates_annotation_model_annotation_annotation_type_equals_text(self):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import AnnotationModel
+        from scitex.schema import create_stat_result
+        from scitex_bridge import stat_result_to_annotation
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
+        annotation = stat_result_to_annotation(result)
+        # Act
+        # Assert
+        # Assert
         assert annotation.annotation_type == "text"
 
-    def test_annotation_has_position(self):
-        """Test annotation has position set."""
+
+    def test_annotation_has_position_annotation_x_equals_n_0_5(self):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import stat_result_to_annotation
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
         annotation = stat_result_to_annotation(result, x=0.5, y=0.9)
-
+        # Act
+        # Assert
+        # Assert
         assert annotation.x == 0.5
+
+    def test_annotation_has_position_annotation_y_equals_n_0_9(self):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import stat_result_to_annotation
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        # Act
+        annotation = stat_result_to_annotation(result, x=0.5, y=0.9)
+        # Act
+        # Assert
+        # Assert
         assert annotation.y == 0.9
 
-    def test_format_style_applied(self):
-        """Test different format styles."""
+
+    def test_format_style_applied_ann_asterisk_text_equals_case(self):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import stat_result_to_annotation
-
         result = create_stat_result("pearson", "r", 0.85, 0.001)
-
         ann_asterisk = stat_result_to_annotation(result, format_style="asterisk")
+        # Act
         ann_compact = stat_result_to_annotation(result, format_style="compact")
-
+        # Act
+        # Assert
+        # Assert
         assert ann_asterisk.text == "***"
+
+    def test_format_style_applied_r_0_850_in_ann_compact_text(self):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import stat_result_to_annotation
+        result = create_stat_result("pearson", "r", 0.85, 0.001)
+        ann_asterisk = stat_result_to_annotation(result, format_style="asterisk")
+        # Act
+        ann_compact = stat_result_to_annotation(result, format_style="compact")
+        # Act
+        # Assert
+        # Assert
         assert "r = 0.850" in ann_compact.text
+
 
 
 class TestAddStatsToFigureModel:
@@ -69,63 +128,114 @@ class TestAddStatsToFigureModel:
             axes=[{"row": 0, "col": 0, "plots": []}],
         )
 
-    def test_adds_annotations_to_axes(self, figure_model):
-        """Test adding stats adds annotations to axes."""
+    def test_adds_annotations_to_axes_annotations_in_result_axes_0(self, figure_model):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import add_stats_to_figure_model
-
         stats = [
             create_stat_result("t-test", "t", 2.5, 0.01),
             create_stat_result("pearson", "r", 0.85, 0.001),
         ]
+        # Act
         result = add_stats_to_figure_model(figure_model, stats)
-
+        # Act
+        # Assert
+        # Assert
         assert "annotations" in result.axes[0]
+
+    def test_adds_annotations_to_axes_len_result_axes_0_annota_is_2(self, figure_model):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import add_stats_to_figure_model
+        stats = [
+            create_stat_result("t-test", "t", 2.5, 0.01),
+            create_stat_result("pearson", "r", 0.85, 0.001),
+        ]
+        # Act
+        result = add_stats_to_figure_model(figure_model, stats)
+        # Act
+        # Assert
+        # Assert
         assert len(result.axes[0]["annotations"]) == 2
+
 
     def test_handles_empty_stats(self, figure_model):
         """Test handling empty stats list."""
+        # Arrange
         from scitex_bridge import add_stats_to_figure_model
 
+        # Act
         result = add_stats_to_figure_model(figure_model, [])
+        # Assert
         assert result is figure_model
 
 
 class TestPositionStatAnnotation:
     """Tests for position_stat_annotation function."""
 
-    def test_returns_position(self):
-        """Test that function returns Position object."""
+    def test_returns_position_position_is_position(self):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import position_stat_annotation
         from scitex_bridge._stats_vis import Position
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
-
+        # Act
         position = position_stat_annotation(result, bounds)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(position, Position)
+
+    def test_returns_position_position_unit_equals_data(self):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import position_stat_annotation
+        from scitex_bridge._stats_vis import Position
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
+        # Act
+        position = position_stat_annotation(result, bounds)
+        # Act
+        # Assert
+        # Assert
         assert position.unit == "data"
 
-    def test_preferred_corner(self):
-        """Test preferred corner positioning."""
+
+    def test_preferred_corner_pos_tr_x_pos_tl_x(self):
+        # Arrange
+        # Arrange
         from scitex.schema import create_stat_result
-
         from scitex_bridge import position_stat_annotation
-
         result = create_stat_result("t-test", "t", 2.5, 0.01)
         bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
-
         pos_tr = position_stat_annotation(result, bounds, preferred_corner="top-right")
+        # Act
         pos_tl = position_stat_annotation(result, bounds, preferred_corner="top-left")
-
-        # Top-right should have higher x than top-left
+        # Act
+        # Assert
+        # Assert
         assert pos_tr.x > pos_tl.x
-        # Both should have same y (top)
+
+    def test_preferred_corner_abs_pos_tr_y_pos_tl_y_1(self):
+        # Arrange
+        # Arrange
+        from scitex.schema import create_stat_result
+        from scitex_bridge import position_stat_annotation
+        result = create_stat_result("t-test", "t", 2.5, 0.01)
+        bounds = {"x_min": 0, "x_max": 10, "y_min": 0, "y_max": 100}
+        pos_tr = position_stat_annotation(result, bounds, preferred_corner="top-right")
+        # Act
+        pos_tl = position_stat_annotation(result, bounds, preferred_corner="top-left")
+        # Act
+        # Assert
+        # Assert
         assert abs(pos_tr.y - pos_tl.y) < 1
+
 
 
 # EOF
