@@ -24,61 +24,91 @@ class TestAddStatsFromResults:
             create_stat_result("t-test", "t", 2.5, 0.02),
         ]
 
-    def test_auto_detect_matplotlib_axes(self, stat_results):
-        """Test auto-detection works with matplotlib axes."""
+    def test_auto_detect_matplotlib_axes_result_is_ax(self, stat_results):
+        # Arrange
+        # Arrange
         import matplotlib.pyplot as plt
-
         from scitex_bridge import add_stats_from_results
-
         fig, ax = plt.subplots()
-
         # Should auto-detect plt backend
+        # Act
         result = add_stats_from_results(ax, stat_results)
-
-        # Should return the axes (for chaining)
+        # Act
+        # Assert
+        # Assert
         assert result is ax
 
-        # Should have added text annotations
+    def test_auto_detect_matplotlib_axes_len_ax_texts_is_2(self, stat_results):
+        # Arrange
+        # Arrange
+        import matplotlib.pyplot as plt
+        from scitex_bridge import add_stats_from_results
+        fig, ax = plt.subplots()
+        # Should auto-detect plt backend
+        # Act
+        result = add_stats_from_results(ax, stat_results)
+        # Act
+        # Assert
+        # Assert
         assert len(ax.texts) == 2
 
-        plt.close(fig)
 
-    def test_auto_detect_figure_model(self, stat_results):
-        """Test auto-detection works with FigureModel."""
+    def test_auto_detect_figure_model_result_is_model(self, stat_results):
+        # Arrange
+        # Arrange
         from scitex.io.bundle.kinds._plot._models import FigureModel
-
         from scitex_bridge import add_stats_from_results
-
         model = FigureModel(
             width_mm=170,
             height_mm=120,
             axes=[{"row": 0, "col": 0, "plots": []}],
         )
-
         # Should auto-detect vis backend
+        # Act
         result = add_stats_from_results(model, stat_results)
-
-        # Should return the model (for chaining)
+        # Act
+        # Assert
+        # Assert
         assert result is model
 
-        # Should have added annotations
+    def test_auto_detect_figure_model_len_model_axes_0_get_ann_is_2(self, stat_results):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import FigureModel
+        from scitex_bridge import add_stats_from_results
+        model = FigureModel(
+            width_mm=170,
+            height_mm=120,
+            axes=[{"row": 0, "col": 0, "plots": []}],
+        )
+        # Should auto-detect vis backend
+        # Act
+        result = add_stats_from_results(model, stat_results)
+        # Act
+        # Assert
+        # Assert
         assert len(model.axes[0].get("annotations", [])) == 2
+
 
     def test_explicit_plt_backend(self, stat_results):
         """Test explicit plt backend."""
+        # Arrange
         import matplotlib.pyplot as plt
 
         from scitex_bridge import add_stats_from_results
 
         fig, ax = plt.subplots()
 
+        # Act
         add_stats_from_results(ax, stat_results, backend="plt")
+        # Assert
         assert len(ax.texts) == 2
 
         plt.close(fig)
 
     def test_explicit_vis_backend(self, stat_results):
         """Test explicit vis backend."""
+        # Arrange
         from scitex.io.bundle.kinds._plot._models import FigureModel
 
         from scitex_bridge import add_stats_from_results
@@ -89,11 +119,14 @@ class TestAddStatsFromResults:
             axes=[{"row": 0, "col": 0, "plots": []}],
         )
 
+        # Act
         add_stats_from_results(model, stat_results, backend="vis")
+        # Assert
         assert len(model.axes[0].get("annotations", [])) == 2
 
     def test_single_stat_result(self):
         """Test with single StatResult (not list)."""
+        # Arrange
         import matplotlib.pyplot as plt
         from scitex.schema import create_stat_result
 
@@ -103,13 +136,16 @@ class TestAddStatsFromResults:
         stat = create_stat_result("pearson", "r", 0.85, 0.001)
 
         # Should accept single StatResult
+        # Act
         add_stats_from_results(ax, stat)
+        # Assert
         assert len(ax.texts) == 1
 
         plt.close(fig)
 
     def test_format_style_applied(self):
         """Test format_style is passed through."""
+        # Arrange
         import matplotlib.pyplot as plt
         from scitex.schema import create_stat_result
 
@@ -121,13 +157,16 @@ class TestAddStatsFromResults:
         add_stats_from_results(ax, stat, format_style="compact")
 
         # Text should be in compact format
+        # Act
         text_content = ax.texts[0].get_text()
+        # Assert
         assert "r = 0.850" in text_content
 
         plt.close(fig)
 
-    def test_chaining_support(self, stat_results):
+    def test_chaining_support_len_extracted_is_2(self, stat_results):
         """Test method chaining works."""
+        # Arrange
         import matplotlib.pyplot as plt
 
         from scitex_bridge import add_stats_from_results, extract_stats_from_axes
@@ -135,20 +174,25 @@ class TestAddStatsFromResults:
         fig, ax = plt.subplots()
 
         # Should support chaining
+        # Act
         extracted = extract_stats_from_axes(add_stats_from_results(ax, stat_results))
 
+        # Assert
         assert len(extracted) == 2
 
         plt.close(fig)
 
     def test_invalid_backend_raises(self, stat_results):
         """Test invalid backend raises ValueError."""
+        # Arrange
         import matplotlib.pyplot as plt
 
         from scitex_bridge import add_stats_from_results
 
+        # Act
         fig, ax = plt.subplots()
 
+        # Assert
         with pytest.raises(ValueError, match="Unknown backend"):
             add_stats_from_results(ax, stat_results, backend="invalid")
 

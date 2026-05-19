@@ -27,41 +27,122 @@ class TestFigureToVisModel:
         yield fig
         plt.close(fig)
 
-    def test_converts_to_figure_model(self, mpl_figure):
-        """Test conversion to FigureModel."""
+    def test_converts_to_figure_model_model_is_figuremodel(self, mpl_figure):
+        # Arrange
+        # Arrange
         from scitex.io.bundle.kinds._plot._models import FigureModel
 
         from scitex_bridge import figure_to_vis_model
 
+        # Act
         model = figure_to_vis_model(mpl_figure)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(model, FigureModel)
+
+    def test_converts_to_figure_model_model_width_mm_0(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import FigureModel
+
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert model.width_mm > 0
+
+    def test_converts_to_figure_model_model_height_mm_0(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import FigureModel
+
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert model.height_mm > 0
 
-    def test_captures_dimensions(self, mpl_figure):
-        """Test that dimensions are captured correctly."""
+    def test_captures_dimensions_abs_model_width_mm_expected_width_mm_1(
+        self, mpl_figure
+    ):
+        # Arrange
+        # Arrange
         from scitex_bridge import figure_to_vis_model
 
         model = figure_to_vis_model(mpl_figure)
-
         # Default matplotlib figure is 6.4 x 4.8 inches
         expected_width_mm = 6.4 * 25.4  # ~162.56 mm
+        # Act
         expected_height_mm = 4.8 * 25.4  # ~121.92 mm
-
+        # Act
+        # Assert
+        # Assert
         assert abs(model.width_mm - expected_width_mm) < 1
-        assert abs(model.height_mm - expected_height_mm) < 1
 
-    def test_captures_axes_properties(self, mpl_figure):
-        """Test that axes properties are captured."""
+    def test_captures_dimensions_abs_model_height_mm_expected_height_mm_1(
+        self, mpl_figure
+    ):
+        # Arrange
+        # Arrange
         from scitex_bridge import figure_to_vis_model
 
         model = figure_to_vis_model(mpl_figure)
+        # Default matplotlib figure is 6.4 x 4.8 inches
+        expected_width_mm = 6.4 * 25.4  # ~162.56 mm
+        # Act
+        expected_height_mm = 4.8 * 25.4  # ~121.92 mm
+        # Act
+        # Assert
+        # Assert
+        assert abs(model.height_mm - expected_height_mm) < 1
 
+    def test_captures_axes_properties_len_model_axes_is_1(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert len(model.axes) == 1
+
+    def test_captures_axes_properties_axes_dict_get_xlabel_x_label(self, mpl_figure):
+        # Arrange
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
         axes_dict = model.axes[0]
+        # Assert
         assert axes_dict.get("xlabel") == "X Label"
+
+    def test_captures_axes_properties_axes_dict_get_ylabel_y_label(self, mpl_figure):
+        # Arrange
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
+        axes_dict = model.axes[0]
+        # Assert
         assert axes_dict.get("ylabel") == "Y Label"
+
+    def test_captures_axes_properties_axes_dict_get_title_test_title(self, mpl_figure):
+        # Arrange
+        from scitex_bridge import figure_to_vis_model
+
+        # Act
+        model = figure_to_vis_model(mpl_figure)
+        axes_dict = model.axes[0]
+        # Assert
         assert axes_dict.get("title") == "Test Title"
 
 
@@ -81,33 +162,79 @@ class TestAxesToVisAxes:
         yield ax
         plt.close(fig)
 
-    def test_creates_axes_model(self, mpl_axes):
-        """Test creation of AxesModel."""
+    def test_creates_axes_model_model_is_axesmodel(self, mpl_axes):
+        # Arrange
+        # Arrange
         from scitex.io.bundle.kinds._plot._models import AxesModel
 
         from scitex_bridge import axes_to_vis_axes
 
+        # Act
         model = axes_to_vis_axes(mpl_axes)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(model, AxesModel)
-        assert model.xlabel == "X"
-        assert model.ylabel == "Y"
 
-    def test_captures_limits(self, mpl_axes):
-        """Test that axis limits are captured."""
+    def test_creates_axes_model_model_xlabel_equals_x(self, mpl_axes):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import AxesModel
+
         from scitex_bridge import axes_to_vis_axes
 
+        # Act
         model = axes_to_vis_axes(mpl_axes)
+        # Act
+        # Assert
+        # Assert
+        assert model.xlabel == "X"
 
+    def test_creates_axes_model_model_ylabel_equals_y(self, mpl_axes):
+        # Arrange
+        # Arrange
+        from scitex.io.bundle.kinds._plot._models import AxesModel
+
+        from scitex_bridge import axes_to_vis_axes
+
+        # Act
+        model = axes_to_vis_axes(mpl_axes)
+        # Act
+        # Assert
+        # Assert
+        assert model.ylabel == "Y"
+
+    def test_captures_limits_model_xlim_equals_n_0_10(self, mpl_axes):
+        # Arrange
+        # Arrange
+        from scitex_bridge import axes_to_vis_axes
+
+        # Act
+        model = axes_to_vis_axes(mpl_axes)
+        # Act
+        # Assert
+        # Assert
         assert model.xlim == [0, 10]
+
+    def test_captures_limits_model_ylim_equals_n_0_100(self, mpl_axes):
+        # Arrange
+        # Arrange
+        from scitex_bridge import axes_to_vis_axes
+
+        # Act
+        model = axes_to_vis_axes(mpl_axes)
+        # Act
+        # Assert
+        # Assert
         assert model.ylim == [0, 100]
 
 
 class TestTrackingToPlotConfigs:
     """Tests for tracking_to_plot_configs function."""
 
-    def test_converts_plot_history(self):
-        """Test conversion of plot tracking history."""
+    def test_converts_plot_history_len_plots_is_1(self):
+        # Arrange
+        # Arrange
         import numpy as np
 
         from scitex_bridge import tracking_to_plot_configs
@@ -120,15 +247,60 @@ class TestTrackingToPlotConfigs:
                 {"color": "blue", "label": "test"},
             ),
         }
-
+        # Act
         plots = tracking_to_plot_configs(history)
-
+        # Act
+        # Assert
+        # Assert
         assert len(plots) == 1
+
+    def test_converts_plot_history_plots_0_plot_type_line(self):
+        # Arrange
+        # Arrange
+        import numpy as np
+
+        from scitex_bridge import tracking_to_plot_configs
+
+        history = {
+            "plot_0": (
+                "plot_0",
+                "plot",
+                {"args": (np.array([1, 2, 3]), np.array([4, 5, 6]))},
+                {"color": "blue", "label": "test"},
+            ),
+        }
+        # Act
+        plots = tracking_to_plot_configs(history)
+        # Act
+        # Assert
+        # Assert
         assert plots[0].plot_type == "line"
+
+    def test_converts_plot_history_plots_0_plot_id_plot_0(self):
+        # Arrange
+        # Arrange
+        import numpy as np
+
+        from scitex_bridge import tracking_to_plot_configs
+
+        history = {
+            "plot_0": (
+                "plot_0",
+                "plot",
+                {"args": (np.array([1, 2, 3]), np.array([4, 5, 6]))},
+                {"color": "blue", "label": "test"},
+            ),
+        }
+        # Act
+        plots = tracking_to_plot_configs(history)
+        # Act
+        # Assert
+        # Assert
         assert plots[0].plot_id == "plot_0"
 
-    def test_handles_scatter(self):
-        """Test conversion of scatter plot history."""
+    def test_handles_scatter_len_plots_is_1(self):
+        # Arrange
+        # Arrange
         import numpy as np
 
         from scitex_bridge import tracking_to_plot_configs
@@ -141,10 +313,33 @@ class TestTrackingToPlotConfigs:
                 {"marker": "o"},
             ),
         }
-
+        # Act
         plots = tracking_to_plot_configs(history)
-
+        # Act
+        # Assert
+        # Assert
         assert len(plots) == 1
+
+    def test_handles_scatter_plots_0_plot_type_scatter(self):
+        # Arrange
+        # Arrange
+        import numpy as np
+
+        from scitex_bridge import tracking_to_plot_configs
+
+        history = {
+            "scatter_0": (
+                "scatter_0",
+                "scatter",
+                {"args": (np.array([1, 2, 3]), np.array([4, 5, 6]))},
+                {"marker": "o"},
+            ),
+        }
+        # Act
+        plots = tracking_to_plot_configs(history)
+        # Act
+        # Assert
+        # Assert
         assert plots[0].plot_type == "scatter"
 
 
@@ -161,24 +356,76 @@ class TestCollectFigureData:
         yield fig
         plt.close(fig)
 
-    def test_returns_dict(self, mpl_figure):
-        """Test that function returns dict."""
+    def test_returns_dict_data_is_dict(self, mpl_figure):
+        # Arrange
+        # Arrange
         from scitex_bridge import collect_figure_data
 
+        # Act
         data = collect_figure_data(mpl_figure)
-
+        # Act
+        # Assert
+        # Assert
         assert isinstance(data, dict)
+
+    def test_returns_dict_figure_in_data(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex_bridge import collect_figure_data
+
+        # Act
+        data = collect_figure_data(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert "figure" in data
+
+    def test_returns_dict_axes_in_data(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex_bridge import collect_figure_data
+
+        # Act
+        data = collect_figure_data(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert "axes" in data
 
-    def test_captures_figure_info(self, mpl_figure):
-        """Test that figure info is captured."""
+    def test_captures_figure_info_width_mm_in_data_figure(self, mpl_figure):
+        # Arrange
+        # Arrange
         from scitex_bridge import collect_figure_data
 
+        # Act
         data = collect_figure_data(mpl_figure)
-
+        # Act
+        # Assert
+        # Assert
         assert "width_mm" in data["figure"]
+
+    def test_captures_figure_info_height_mm_in_data_figure(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex_bridge import collect_figure_data
+
+        # Act
+        data = collect_figure_data(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert "height_mm" in data["figure"]
+
+    def test_captures_figure_info_data_figure_width_mm_0(self, mpl_figure):
+        # Arrange
+        # Arrange
+        from scitex_bridge import collect_figure_data
+
+        # Act
+        data = collect_figure_data(mpl_figure)
+        # Act
+        # Assert
+        # Assert
         assert data["figure"]["width_mm"] > 0
 
 
