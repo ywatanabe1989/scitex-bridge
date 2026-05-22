@@ -1,20 +1,29 @@
+codecov:
+  require_ci_to_pass: false
+  # Treat develop as the de-facto default branch — main is a stable
+  # release mirror that only fast-forwards from develop, so develop
+  # is where coverage uploads land. This makes the unbranched badge
+  # endpoint (/graph/badge.svg) follow develop's value.
+  branch: develop
+
 coverage:
   status:
     project:
       default:
-        # scitex-bridge is mostly thin adapters between scitex.stats /
-        # matplotlib / FigureModel; coverage is still ramping while the
-        # umbrella's bundle.kinds layout stabilises. Switch to a hard
-        # `target: 90%` once `_plt_vis` / `_stats_vis` round-trips are
-        # exercised under the umbrella in CI (the standalone-only run
-        # importorskip-s most of those bodies).
         target: auto
         threshold: 1%
     patch:
       default:
-        target: auto
-        threshold: 1%
-  precision: 2
-  round: down
-  range: "70...90"
-comment: false
+        target: 80%
+
+ignore:
+  - "src/scitex_bridge/_sphinx_html/**"
+  - "src/scitex_bridge/_skills/**"
+  - "src/scitex_bridge/_completion.py"
+  - "src/scitex_bridge/_cli/_completion.py"
+  - "tests/**"
+  - "examples/**"
+
+comment:
+  layout: "diff, files"
+  require_changes: true
