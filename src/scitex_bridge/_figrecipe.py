@@ -26,6 +26,19 @@ _fr_save_recipe = try_import_optional("figrecipe._serializer", "save_recipe")
 FIGRECIPE_AVAILABLE = fr is not None and _fr_save_recipe is not None
 
 
+def _default_get_storage():
+    """Resolve scitex.io.bundle's storage factory, or ``None`` if absent.
+
+    Kept as a small seam so callers (and tests) can inject an alternative
+    storage factory without patching the import machinery.
+    """
+    try:
+        from scitex_io.bundle._bundle._storage import get_storage
+    except ImportError:
+        return None
+    return get_storage
+
+
 def save_with_recipe(
     fig,
     path: Union[str, Path],
@@ -33,6 +46,8 @@ def save_with_recipe(
     include_recipe: bool = True,
     data_format: str = "csv",
     dpi: int = 300,
+    *,
+    storage_resolver=_default_get_storage,
     **kwargs,
 ) -> Dict[str, Path]:
     """Save figure with both CSV and figrecipe recipe.
@@ -54,6 +69,11 @@ def save_with_recipe(
         Format for recipe data: 'csv', 'npz', or 'inline'.
     dpi : int
         Resolution for image output.
+    storage_resolver : callable
+        Zero-arg resolver returning the bundle-storage factory, or
+        ``None`` when scitex.io.bundle is absent. Defaults to
+        :func:`_default_get_storage`; when it returns ``None`` the
+        function degrades to ``{}``.
     **kwargs
         Additional arguments passed to savefig (including facecolor).
 
@@ -62,9 +82,8 @@ def save_with_recipe(
     dict
         Paths to saved files: {'image': Path, 'csv': Path, 'recipe': Path}
     """
-    try:
-        from scitex_io.bundle._bundle._storage import get_storage
-    except ImportError:
+    get_storage = storage_resolver()
+    if get_storage is None:
         return {}
 
     path = Path(path)
@@ -248,6 +267,8 @@ def _capture_figure_state(fig, figure_record):
 
 def load_recipe(
     path: Union[str, Path],
+    *,
+    figrecipe_available: Optional[bool] = None,
 ) -> Any:
     """Load figrecipe recipe from FTS bundle.
 
@@ -255,13 +276,19 @@ def load_recipe(
     ----------
     path : str or Path
         Path to bundle directory, zip file, or recipe.yaml.
+    figrecipe_available : bool or None
+        Whether figrecipe is importable. Defaults to the module-level
+        ``FIGRECIPE_AVAILABLE`` flag; callers (and tests) may pass
+        ``False`` to exercise the missing-dependency branch explicitly.
 
     Returns
     -------
     tuple
         (fig, axes) reproduced from recipe.
     """
-    if not FIGRECIPE_AVAILABLE:
+    if figrecipe_available is None:
+        figrecipe_available = FIGRECIPE_AVAILABLE
+    if not figrecipe_available:
         raise ImportError("figrecipe is required for loading recipes")
 
     path = Path(path)
