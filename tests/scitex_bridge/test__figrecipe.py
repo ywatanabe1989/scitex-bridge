@@ -53,24 +53,18 @@ class TestHasFigrecipe:
 
 
 class TestSaveWithRecipe:
-    def test_returns_empty_when_storage_unavailable(
-        self, mpl_fig, tmp_path, monkeypatch
-    ):
+    def test_returns_empty_when_storage_resolver_yields_none(self, mpl_fig, tmp_path):
         # The bundle storage path is gated on scitex.io.bundle being importable.
-        # Force the ImportError branch to verify graceful degradation.
+        # Inject a resolver that reports the dependency as absent (returns None)
+        # to verify graceful degradation regardless of what is installed.
         # Arrange
-        import builtins
+        def storage_absent():
+            return None
 
-        real_import = builtins.__import__
-
-        def fake_import(name, *a, **kw):
-            if name.startswith("scitex.io.bundle"):
-                raise ImportError("forced for test")
-            return real_import(name, *a, **kw)
-
-        monkeypatch.setattr(builtins, "__import__", fake_import)
         # Act
-        result = save_with_recipe(mpl_fig, tmp_path / "bundle")
+        result = save_with_recipe(
+            mpl_fig, tmp_path / "bundle", storage_resolver=storage_absent
+        )
         # Assert
         assert result == {}
 
@@ -84,15 +78,16 @@ class TestSaveWithRecipe:
 
 
 class TestLoadRecipe:
-    def test_raises_import_error_when_figrecipe_unavailable(
-        self, tmp_path, monkeypatch
-    ):
+    def test_raises_import_error_when_figrecipe_unavailable(self, tmp_path):
+        # Inject the availability flag as False (rather than rewriting the
+        # module global) to exercise the missing-dependency branch.
         # Arrange
+        recipe_path = tmp_path / "recipe.yaml"
         # Act
-        monkeypatch.setattr(fr_mod, "FIGRECIPE_AVAILABLE", False)
+        ctx = pytest.raises(ImportError, match="figrecipe is required")
         # Assert
-        with pytest.raises(ImportError, match="figrecipe is required"):
-            load_recipe(tmp_path / "recipe.yaml")
+        with ctx:
+            load_recipe(recipe_path, figrecipe_available=False)
 
 
 class TestSaveFigureImage:
